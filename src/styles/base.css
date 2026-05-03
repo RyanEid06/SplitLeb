@@ -1,0 +1,170 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  color-scheme: dark;
+  color: #f4f0e7;
+  background: #070b12;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --bg: #070b12;
+  --bg-strong: #05070c;
+  --bg-soft: #0b111b;
+
+  --surface: #101824;
+  --surface-soft: #141f2d;
+  --surface-hover: #1a2838;
+  --surface-elevated: #172232;
+  --surface-inset: #0b111b;
+
+  --text: #e9edf0;
+  --text-strong: #fff8ec;
+  --text-muted: #9ba8b7;
+  --text-soft: #7f8c9d;
+
+  --border: #243244;
+  --border-strong: #35475d;
+
+  --primary: #2fbf9b;
+  --primary-hover: #4ed4b4;
+  --primary-soft: rgba(47, 191, 155, 0.14);
+  --primary-border: rgba(47, 191, 155, 0.42);
+  --primary-text: #06110f;
+
+  --secondary: #d7ae5f;
+  --secondary-hover: #ecc879;
+  --secondary-soft: rgba(215, 174, 95, 0.14);
+  --secondary-border: rgba(215, 174, 95, 0.38);
+
+  --danger: #ff7b72;
+  --danger-bg: rgba(255, 123, 114, 0.12);
+  --danger-border: rgba(255, 123, 114, 0.4);
+
+  --success: #70e6a8;
+  --success-bg: rgba(112, 230, 168, 0.12);
+  --success-border: rgba(112, 230, 168, 0.38);
+
+  --warning: #f2c36b;
+  --warning-bg: rgba(242, 195, 107, 0.13);
+  --warning-border: rgba(242, 195, 107, 0.4);
+
+  --radius-sm: 0.65rem;
+  --radius-md: 0.9rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.375rem;
+  --radius-2xl: 1.75rem;
+
+  --shadow-soft: 0 22px 60px rgb(0 0 0 / 0.28);
+  --shadow-card: 0 18px 45px rgb(0 0 0 / 0.22);
+  --shadow-glow: 0 0 0 1px rgba(47, 191, 155, 0.1),
+    0 22px 55px rgba(0, 0, 0, 0.28);
+
+  --focus-ring: 0 0 0 3px rgba(47, 191, 155, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 0;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(47, 191, 155, 0.13), transparent 34rem),
+    radial-gradient(circle at top right, rgba(215, 174, 95, 0.08), transparent 30rem),
+    linear-gradient(135deg, var(--bg-strong), var(--bg) 48%, #08101a);
+  color: var(--text);
+}
+
+#root {
+  min-width: 0;
+  min-height: 100vh;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+select,
+textarea {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(47, 191, 155, 0.28);
+  color: var(--text-strong);
+}
+
+.muted,
+.muted-text,
+.helper-text,
+.placeholder-text {
+  color: var(--text-muted);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--secondary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.success-message {
+  color: var(--success);
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.form-error,
+.row-error {
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.form-error {
+  margin: 0 0 1rem;
+}
+
+.row-error {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+}

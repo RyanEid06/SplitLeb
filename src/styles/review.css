@@ -1,0 +1,665 @@
+.review-page {
+  display: grid;
+  min-width: 0;
+  gap: 1.5rem;
+}
+
+.review-error-panel {
+  max-width: 760px;
+}
+
+.review-error-panel h1 {
+  margin: 0 0 0.75rem;
+  color: var(--text-strong);
+}
+
+.review-error-panel .form-error {
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-md);
+  background: var(--danger-bg);
+  padding: 0.85rem 1rem;
+}
+
+.review-main-panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.review-summary-panel {
+  position: sticky;
+  top: 32px;
+  align-self: start;
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.review-summary-panel h2 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.1rem;
+  letter-spacing: -0.025em;
+}
+
+/* Person totals */
+
+.review-table {
+  display: grid;
+  min-width: 0;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.review-table-header,
+.review-table-row {
+  display: grid;
+  min-width: 980px;
+  grid-template-columns:
+    minmax(180px, 1.45fr)
+    repeat(5, minmax(92px, 0.76fr))
+    minmax(150px, 1.08fr)
+    minmax(84px, 0.55fr);
+  column-gap: 0.85rem;
+  align-items: center;
+}
+
+.review-table-header {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+    var(--surface-soft);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.review-person-block {
+  min-width: 980px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    var(--surface-soft);
+}
+
+.review-table-row {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 0.9rem 0.85rem;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.review-table-row:hover {
+  background:
+    linear-gradient(90deg, rgba(47, 191, 155, 0.1), transparent),
+    rgba(255, 255, 255, 0.025);
+}
+
+.review-table-row strong {
+  color: var(--text-strong);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.person-name-cell {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-strong);
+  font-weight: 900;
+}
+
+.person-name-cell span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.person-dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+
+.expand-indicator {
+  color: var(--primary-hover);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.review-breakdown {
+  display: grid;
+  gap: 0.55rem;
+  border-top: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+    var(--surface-inset);
+  padding: 0.85rem;
+}
+
+.breakdown-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 0.75rem 0.85rem;
+}
+
+.breakdown-line div {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.breakdown-line span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.breakdown-line strong {
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bill summary */
+
+.summary-stack {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
+}
+
+.summary-row span {
+  color: var(--text-muted);
+  font-weight: 760;
+}
+
+.summary-row strong {
+  color: var(--text-strong);
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.summary-row-strong span,
+.summary-row-strong strong {
+  color: var(--text-strong);
+  font-size: 1.03rem;
+}
+
+/* Settlement panel */
+
+.settlement-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.25rem;
+  padding: 1rem;
+  border-color: var(--border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 38%),
+    var(--surface-soft);
+  box-shadow: none;
+}
+
+.panel-header h2 {
+  margin: 0 0 0.45rem;
+  color: var(--text-strong);
+  font-size: 1.05rem;
+}
+
+.panel-header p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.payment-status-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    var(--surface);
+  padding: 0.9rem;
+}
+
+.payment-status-card p {
+  grid-column: 1 / -1;
+  margin: 0;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.65rem;
+}
+
+.payment-status-card strong {
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.payment-status-balanced {
+  border-color: var(--success-border);
+}
+
+.payment-status-underpaid,
+.payment-status-overpaid {
+  border-color: var(--warning-border);
+}
+
+.muted-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.status-ok {
+  background: var(--success-bg);
+  color: var(--success);
+  font-weight: 900;
+}
+
+.status-warning {
+  background: var(--warning-bg);
+  color: #ffe0a3;
+  font-weight: 900;
+}
+
+.negative-money {
+  color: var(--danger) !important;
+}
+
+.warning-status {
+  color: var(--warning) !important;
+  font-weight: 950;
+}
+
+.positive-status {
+  color: var(--success) !important;
+  font-weight: 950;
+}
+
+.settled-status {
+  color: var(--text-muted) !important;
+  font-weight: 900;
+}
+
+.balance-positive {
+  color: var(--success);
+  font-weight: 900;
+}
+
+.balance-negative {
+  color: var(--danger);
+  font-weight: 900;
+}
+
+.balance-zero {
+  color: var(--text-muted);
+  font-weight: 850;
+}
+
+/* Payment table */
+
+.payment-table-wrap {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.payment-table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+  padding: 0.75rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.payment-table th {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+    var(--surface-soft);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.payment-table td {
+  color: var(--text);
+  font-weight: 760;
+}
+
+.payment-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.payment-table .money-input {
+  width: 7.25rem;
+  max-width: 100%;
+  min-height: 40px;
+}
+
+/* Transfers */
+
+.settlement-list {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    var(--surface);
+  padding: 0.9rem;
+}
+
+.settlement-list h3 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1rem;
+}
+
+.settlement-transfer-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settlement-transfer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  padding: 0.75rem 0.85rem;
+}
+
+.settlement-transfer-sentence {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.settlement-transfer-sentence strong {
+  color: var(--text-strong);
+}
+
+.settlement-transfer-amount {
+  flex: 0 0 auto;
+  border: 1px solid var(--primary-border);
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+  padding: 0.35rem 0.65rem;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.empty-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+/* Share summary */
+
+.share-summary-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 38%),
+    var(--surface-soft);
+  padding: 1rem;
+  box-shadow: none;
+}
+
+.share-summary-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.share-summary-header h2 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.1rem;
+}
+
+.share-summary-header p {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.share-summary-toggle {
+  display: inline-flex;
+  width: fit-content;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  padding: 0.2rem;
+}
+
+.share-summary-toggle button {
+  min-height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.share-summary-toggle button:hover {
+  color: var(--text-strong);
+}
+
+.share-summary-toggle button.active {
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+}
+
+.share-summary-textarea {
+  width: 100%;
+  min-height: 280px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+    var(--surface-inset);
+  color: var(--text);
+  padding: 0.9rem;
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, ui-monospace,
+    monospace;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.share-summary-textarea:focus {
+  border-color: var(--primary-border);
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (max-width: 1100px) {
+  .review-summary-panel {
+    position: static;
+  }
+
+  .review-table-header,
+  .review-table-row,
+  .review-person-block {
+    min-width: 900px;
+  }
+
+  .review-table-header,
+  .review-table-row {
+    grid-template-columns:
+      minmax(170px, 1.35fr)
+      repeat(5, minmax(84px, 0.72fr))
+      minmax(140px, 1fr)
+      minmax(80px, 0.5fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .review-table {
+    overflow-x: visible;
+  }
+
+  .review-table-header {
+    display: none;
+  }
+
+  .review-person-block {
+    min-width: 0;
+  }
+
+  .review-table-row {
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+
+  .expand-indicator {
+    text-align: left;
+  }
+
+  .breakdown-line,
+  .summary-row,
+  .settlement-transfer-card,
+  .share-summary-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .payment-status-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .payment-table,
+  .payment-table thead,
+  .payment-table tbody,
+  .payment-table tr,
+  .payment-table th,
+  .payment-table td {
+    display: block;
+  }
+
+  .payment-table thead {
+    display: none;
+  }
+
+  .payment-table tr {
+    display: grid;
+    gap: 0.55rem;
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem;
+  }
+
+  .payment-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .payment-table td {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 0;
+    padding: 0;
+  }
+
+  .payment-table td::before {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 950;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .payment-table td:nth-child(1)::before {
+    content: "Person";
+  }
+
+  .payment-table td:nth-child(2)::before {
+    content: "Owes";
+  }
+
+  .payment-table td:nth-child(3)::before {
+    content: "Paid";
+  }
+
+  .payment-table td:nth-child(4)::before {
+    content: "Balance";
+  }
+
+  .payment-table .money-input {
+    width: 100%;
+  }
+
+  .share-summary-header .primary-button,
+  .share-summary-toggle {
+    width: 100%;
+  }
+
+  .share-summary-toggle button {
+    flex: 1;
+  }
+}

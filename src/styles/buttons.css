@@ -1,0 +1,254 @@
+.button,
+button.button,
+.primary-button,
+.secondary-button,
+.create-bill-button,
+.workspace-actions button,
+.workspace-actions .button,
+.page-header-action .button,
+.table-actions button,
+.table-actions .button,
+.card .button {
+  position: relative;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+    var(--surface);
+  color: var(--text-strong);
+  padding: 0 1rem;
+  font: inherit;
+  font-weight: 850;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease,
+    color 140ms ease;
+}
+
+.button:hover:not(:disabled),
+button.button:hover:not(:disabled),
+.secondary-button:hover:not(:disabled),
+.workspace-actions button:hover:not(:disabled),
+.workspace-actions .button:hover,
+.page-header-action .button:hover,
+.table-actions button:hover:not(:disabled),
+.table-actions .button:hover,
+.card .button:hover {
+  border-color: rgba(47, 191, 155, 0.34);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), transparent),
+    var(--surface-hover);
+  color: var(--text-strong);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
+}
+
+.button:active,
+button.button:active,
+.primary-button:active,
+.secondary-button:active,
+.create-bill-button:active,
+.workspace-actions button:active,
+.workspace-actions .button:active,
+.table-actions button:active,
+.table-actions .button:active {
+  transform: translateY(1px);
+}
+
+.button-primary,
+button.button-primary,
+.primary-button,
+.create-bill-button,
+.workspace-actions .button-primary,
+.page-header-action .button-primary,
+.table-actions .button-primary,
+.card .button-primary {
+  border-color: rgba(47, 191, 155, 0.62);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.22), transparent 42%),
+    linear-gradient(135deg, var(--primary), #1b947d);
+  color: var(--primary-text);
+  box-shadow:
+    0 14px 34px rgba(47, 191, 155, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.button-primary:hover:not(:disabled),
+button.button-primary:hover:not(:disabled),
+.primary-button:hover:not(:disabled),
+.create-bill-button:hover:not(:disabled),
+.workspace-actions .button-primary:hover,
+.page-header-action .button-primary:hover,
+.table-actions .button-primary:hover,
+.card .button-primary:hover {
+  border-color: rgba(78, 212, 180, 0.78);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.26), transparent 42%),
+    linear-gradient(135deg, var(--primary-hover), #22aa8e);
+  color: var(--primary-text);
+  box-shadow:
+    0 18px 42px rgba(47, 191, 155, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.secondary-button {
+  border-color: var(--secondary-border);
+  background:
+    linear-gradient(180deg, rgba(215, 174, 95, 0.13), rgba(215, 174, 95, 0.045)),
+    var(--surface);
+  color: var(--text-strong);
+}
+
+.secondary-button:hover:not(:disabled) {
+  border-color: rgba(215, 174, 95, 0.58);
+  background:
+    linear-gradient(180deg, rgba(215, 174, 95, 0.18), rgba(215, 174, 95, 0.06)),
+    var(--surface-hover);
+}
+
+.danger-button,
+.table-actions .danger-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid var(--danger-border);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    var(--danger-bg);
+  color: var(--danger);
+  padding: 0 0.85rem;
+  font: inherit;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.danger-button:hover:not(:disabled),
+.table-actions .danger-button:hover:not(:disabled) {
+  border-color: rgba(255, 123, 114, 0.66);
+  background: rgba(255, 123, 114, 0.18);
+  color: #ffaaa4;
+}
+
+.danger-button:active {
+  transform: translateY(1px);
+}
+
+.link-button {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--primary-hover);
+  padding: 0 0.15rem;
+  font: inherit;
+  font-weight: 850;
+  text-decoration: underline;
+  text-decoration-color: rgba(78, 212, 180, 0.5);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.link-button:hover:not(:disabled) {
+  color: var(--text-strong);
+  text-decoration-color: var(--primary-hover);
+}
+
+.quick-item-form button,
+.quick-extra-actions button {
+  min-height: 42px;
+  border-radius: 999px;
+  font-weight: 850;
+}
+
+.quick-item-form button {
+  border: 1px solid rgba(47, 191, 155, 0.62);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 42%),
+    linear-gradient(135deg, var(--primary), #1b947d);
+  color: var(--primary-text);
+  padding: 0 1rem;
+  box-shadow: 0 14px 34px rgba(47, 191, 155, 0.18);
+}
+
+.quick-item-form button:hover:not(:disabled) {
+  border-color: rgba(78, 212, 180, 0.78);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 42%),
+    linear-gradient(135deg, var(--primary-hover), #22aa8e);
+}
+
+.quick-extra-actions button {
+  border: 1px solid var(--border-strong);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+    var(--surface);
+  color: var(--text-strong);
+  padding: 0 1rem;
+  white-space: nowrap;
+}
+
+.quick-extra-actions button:hover:not(:disabled) {
+  border-color: rgba(47, 191, 155, 0.34);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), transparent),
+    var(--surface-hover);
+}
+
+.button:focus-visible,
+button.button:focus-visible,
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.create-bill-button:focus-visible,
+.workspace-actions button:focus-visible,
+.workspace-actions .button:focus-visible,
+.table-actions button:focus-visible,
+.table-actions .button:focus-visible,
+.danger-button:focus-visible,
+.link-button:focus-visible,
+.quick-item-form button:focus-visible,
+.quick-extra-actions button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), 0 14px 34px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 760px) {
+  .button,
+  button.button,
+  .primary-button,
+  .secondary-button,
+  .create-bill-button {
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .table-actions .button,
+  .table-actions button,
+  .table-actions .danger-button {
+    width: auto;
+    white-space: nowrap;
+  }
+}

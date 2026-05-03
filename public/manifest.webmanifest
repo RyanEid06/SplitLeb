@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "SplitLeb",
+  "short_name": "SplitLeb",
+  "description": "A private local bill-splitting app for friends in Lebanon.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#1f3d2b",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/splitleb-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/splitleb-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

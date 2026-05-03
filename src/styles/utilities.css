@@ -1,0 +1,76 @@
+.stack-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.stack-list li::marker {
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.negative {
+  color: var(--danger);
+}
+
+.positive {
+  color: var(--success);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.balance-positive,
+.groups-balance-positive {
+  color: var(--success);
+}
+
+.balance-negative,
+.groups-balance-negative {
+  color: var(--danger);
+}
+
+.balance-zero,
+.groups-balance-zero {
+  color: var(--text-muted);
+}
+
+.status-ok,
+.positive-status,
+.settled-status {
+  color: var(--success);
+}
+
+.status-warning,
+.warning-status {
+  color: var(--warning);
+}
+
+.empty-note {
+  color: var(--text-muted);
+  font-weight: 720;
+  line-height: 1.55;
+}
+
+.count-pill {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary-border);
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+  padding: 0 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
