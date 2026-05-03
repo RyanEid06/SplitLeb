@@ -1,5 +1,7 @@
 .history-page {
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
   overflow-x: hidden;
 }
 
@@ -10,7 +12,9 @@
 
 .history-header-actions {
   display: flex;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.6rem;
@@ -371,17 +375,54 @@
 }
 
 @media (max-width: 760px) {
+  .history-page,
+  .history-page .page-header,
+  .history-card,
+  .history-safety-card,
+  .history-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .history-page .page-header {
+    overflow-x: hidden;
+  }
+
+  .history-header-actions {
+    display: grid;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+  }
+
+  .history-header-actions .button,
+  .history-header-actions button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .history-safety-card {
+    overflow: hidden;
+  }
+
+  .history-safety-heading p,
+  .history-safety-item p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+
   .history-table td {
     grid-template-columns: 1fr;
     gap: 0.35rem;
   }
 
-  .history-header-actions .button {
-    width: 100%;
-  }
-
   .history-row-actions button,
   .history-row-actions .danger-button {
-    flex: 1;
+    flex: 1 1 8rem;
+    min-width: 0;
   }
 }
