@@ -7,8 +7,7 @@ export function NotFoundPage() {
         <p className="eyebrow">404</p>
         <h1>Page not found</h1>
         <p>
-          This route does not exist in SplitLeb. Don’t invent pages before the
-          MVP needs them.
+          This page is unavailable. Your saved bills are still on this device.
         </p>
 
         <Link className="button button-primary" to="/">

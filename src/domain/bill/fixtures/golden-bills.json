@@ -1,0 +1,1009 @@
+[
+  {
+    "name": "usd-equal-remainder",
+    "bill": {
+      "id": "usd-equal-remainder",
+      "title": "usd-equal-remainder",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        },
+        {
+          "id": "p3",
+          "name": "Person 3"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 10000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2",
+              "p3"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 10000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 10000,
+      "personTotalsCents": [
+        3334,
+        3333,
+        3333
+      ],
+      "balancesCents": [
+        6666,
+        -3333,
+        -3333
+      ],
+      "transfers": [
+        [
+          "p2",
+          "p1",
+          3333
+        ],
+        [
+          "p3",
+          "p1",
+          3333
+        ]
+      ]
+    }
+  },
+  {
+    "name": "usd-weighted-remainder",
+    "bill": {
+      "id": "usd-weighted-remainder",
+      "title": "usd-weighted-remainder",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        },
+        {
+          "id": "p3",
+          "name": "Person 3"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 10001,
+          "split": {
+            "method": "shares",
+            "shares": [
+              {
+                "personId": "p1",
+                "shares": 1
+              },
+              {
+                "personId": "p2",
+                "shares": 2
+              },
+              {
+                "personId": "p3",
+                "shares": 3
+              }
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 10001,
+      "personTotalsCents": [
+        1667,
+        3334,
+        5000
+      ],
+      "balancesCents": [
+        -1667,
+        -3334,
+        -5000
+      ],
+      "transfers": []
+    }
+  },
+  {
+    "name": "usd-custom-extras-discount",
+    "bill": {
+      "id": "usd-custom-extras-discount",
+      "title": "usd-custom-extras-discount",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        },
+        {
+          "id": "p3",
+          "name": "Person 3"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 10000,
+          "split": {
+            "method": "custom",
+            "amounts": [
+              {
+                "personId": "p1",
+                "amountCents": 1000
+              },
+              {
+                "personId": "p2",
+                "amountCents": 3000
+              },
+              {
+                "personId": "p3",
+                "amountCents": 6000
+              }
+            ]
+          }
+        }
+      ],
+      "extras": [
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "kind": "delivery",
+          "amountCents": 300,
+          "allocationMethod": "equal"
+        },
+        {
+          "id": "discount",
+          "name": "Discount",
+          "kind": "discount",
+          "amountCents": 600,
+          "allocationMethod": "proportional"
+        }
+      ],
+      "payments": [],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 9700,
+      "personTotalsCents": [
+        1040,
+        2920,
+        5740
+      ],
+      "balancesCents": [
+        -1040,
+        -2920,
+        -5740
+      ],
+      "transfers": []
+    }
+  },
+  {
+    "name": "lbp-thousands",
+    "bill": {
+      "id": "lbp-thousands",
+      "title": "lbp-thousands",
+      "currency": "LBP",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        },
+        {
+          "id": "p3",
+          "name": "Person 3"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 63000000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2",
+              "p3"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 63000000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 63000000,
+      "personTotalsCents": [
+        21000000,
+        21000000,
+        21000000
+      ],
+      "balancesCents": [
+        42000000,
+        -21000000,
+        -21000000
+      ],
+      "transfers": [
+        [
+          "p2",
+          "p1",
+          21000000
+        ],
+        [
+          "p3",
+          "p1",
+          21000000
+        ]
+      ]
+    }
+  },
+  {
+    "name": "lbp-rounded-transfers",
+    "bill": {
+      "id": "lbp-rounded-transfers",
+      "title": "lbp-rounded-transfers",
+      "currency": "LBP",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        },
+        {
+          "id": "p3",
+          "name": "Person 3"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 100000000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2",
+              "p3"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 100000000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 100000000,
+      "personTotalsCents": [
+        33333334,
+        33333333,
+        33333333
+      ],
+      "balancesCents": [
+        66666666,
+        -33333333,
+        -33333333
+      ],
+      "transfers": [
+        [
+          "p2",
+          "p1",
+          33300000
+        ],
+        [
+          "p3",
+          "p1",
+          33300000
+        ]
+      ]
+    }
+  },
+  {
+    "name": "one-cent-payer-not-consuming",
+    "bill": {
+      "id": "one-cent-payer-not-consuming",
+      "title": "one-cent-payer-not-consuming",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        },
+        {
+          "id": "p3",
+          "name": "Person 3"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 1,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2",
+              "p3"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay2",
+          "personId": "p3",
+          "amountCents": 1
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 1,
+      "personTotalsCents": [
+        1,
+        0,
+        0
+      ],
+      "balancesCents": [
+        -1,
+        0,
+        1
+      ],
+      "transfers": [
+        [
+          "p1",
+          "p3",
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "name": "fully-settled",
+    "bill": {
+      "id": "fully-settled",
+      "title": "fully-settled",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 1001,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 501
+        },
+        {
+          "id": "pay1",
+          "personId": "p2",
+          "amountCents": 500
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 1001,
+      "personTotalsCents": [
+        501,
+        500
+      ],
+      "balancesCents": [
+        0,
+        0
+      ],
+      "transfers": []
+    }
+  },
+  {
+    "name": "overpaid",
+    "bill": {
+      "id": "overpaid",
+      "title": "overpaid",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 10000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 12000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 10000,
+      "personTotalsCents": [
+        5000,
+        5000
+      ],
+      "balancesCents": [
+        7000,
+        -5000
+      ],
+      "transfers": [
+        [
+          "p2",
+          "p1",
+          5000
+        ]
+      ]
+    }
+  },
+  {
+    "name": "underpaid",
+    "bill": {
+      "id": "underpaid",
+      "title": "underpaid",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 10000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 2000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 10000,
+      "personTotalsCents": [
+        5000,
+        5000
+      ],
+      "balancesCents": [
+        -3000,
+        -5000
+      ],
+      "transfers": []
+    }
+  },
+  {
+    "name": "twenty-one-people-duplicate-names",
+    "bill": {
+      "id": "twenty-one-people-duplicate-names",
+      "title": "twenty-one-people-duplicate-names",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Friend"
+        },
+        {
+          "id": "p2",
+          "name": "Friend"
+        },
+        {
+          "id": "p3",
+          "name": "Friend"
+        },
+        {
+          "id": "p4",
+          "name": "Friend"
+        },
+        {
+          "id": "p5",
+          "name": "Friend"
+        },
+        {
+          "id": "p6",
+          "name": "Friend"
+        },
+        {
+          "id": "p7",
+          "name": "Friend"
+        },
+        {
+          "id": "p8",
+          "name": "Friend"
+        },
+        {
+          "id": "p9",
+          "name": "Friend"
+        },
+        {
+          "id": "p10",
+          "name": "Friend"
+        },
+        {
+          "id": "p11",
+          "name": "Friend"
+        },
+        {
+          "id": "p12",
+          "name": "Friend"
+        },
+        {
+          "id": "p13",
+          "name": "Friend"
+        },
+        {
+          "id": "p14",
+          "name": "Friend"
+        },
+        {
+          "id": "p15",
+          "name": "Friend"
+        },
+        {
+          "id": "p16",
+          "name": "Friend"
+        },
+        {
+          "id": "p17",
+          "name": "Friend"
+        },
+        {
+          "id": "p18",
+          "name": "Friend"
+        },
+        {
+          "id": "p19",
+          "name": "Friend"
+        },
+        {
+          "id": "p20",
+          "name": "Friend"
+        },
+        {
+          "id": "p21",
+          "name": "A very long imported person name that must still wrap correctly on a narrow phone screen"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 10000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5",
+              "p6",
+              "p7",
+              "p8",
+              "p9",
+              "p10",
+              "p11",
+              "p12",
+              "p13",
+              "p14",
+              "p15",
+              "p16",
+              "p17",
+              "p18",
+              "p19",
+              "p20",
+              "p21"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay20",
+          "personId": "p21",
+          "amountCents": 10000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 10000,
+      "personTotalsCents": [
+        477,
+        477,
+        477,
+        477,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476,
+        476
+      ],
+      "balancesCents": [
+        -477,
+        -477,
+        -477,
+        -477,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        -476,
+        9524
+      ],
+      "transfers": [
+        [
+          "p1",
+          "p21",
+          477
+        ],
+        [
+          "p2",
+          "p21",
+          477
+        ],
+        [
+          "p3",
+          "p21",
+          477
+        ],
+        [
+          "p4",
+          "p21",
+          477
+        ],
+        [
+          "p5",
+          "p21",
+          476
+        ],
+        [
+          "p6",
+          "p21",
+          476
+        ],
+        [
+          "p7",
+          "p21",
+          476
+        ],
+        [
+          "p8",
+          "p21",
+          476
+        ],
+        [
+          "p9",
+          "p21",
+          476
+        ],
+        [
+          "p10",
+          "p21",
+          476
+        ],
+        [
+          "p11",
+          "p21",
+          476
+        ],
+        [
+          "p12",
+          "p21",
+          476
+        ],
+        [
+          "p13",
+          "p21",
+          476
+        ],
+        [
+          "p14",
+          "p21",
+          476
+        ],
+        [
+          "p15",
+          "p21",
+          476
+        ],
+        [
+          "p16",
+          "p21",
+          476
+        ],
+        [
+          "p17",
+          "p21",
+          476
+        ],
+        [
+          "p18",
+          "p21",
+          476
+        ],
+        [
+          "p19",
+          "p21",
+          476
+        ],
+        [
+          "p20",
+          "p21",
+          476
+        ]
+      ]
+    }
+  },
+  {
+    "name": "large-lbp",
+    "bill": {
+      "id": "large-lbp",
+      "title": "large-lbp",
+      "currency": "LBP",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 900000000000,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [
+        {
+          "id": "pay0",
+          "personId": "p1",
+          "amountCents": 900000000000
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 900000000000,
+      "personTotalsCents": [
+        450000000000,
+        450000000000
+      ],
+      "balancesCents": [
+        450000000000,
+        -450000000000
+      ],
+      "transfers": [
+        [
+          "p2",
+          "p1",
+          450000000000
+        ]
+      ]
+    }
+  },
+  {
+    "name": "zero-cost-item",
+    "bill": {
+      "id": "zero-cost-item",
+      "title": "zero-cost-item",
+      "currency": "USD",
+      "people": [
+        {
+          "id": "p1",
+          "name": "Person 1"
+        },
+        {
+          "id": "p2",
+          "name": "Person 2"
+        }
+      ],
+      "items": [
+        {
+          "id": "item",
+          "name": "Receipt",
+          "quantity": 1,
+          "unitPriceCents": 0,
+          "split": {
+            "method": "equal",
+            "personIds": [
+              "p1",
+              "p2"
+            ]
+          }
+        }
+      ],
+      "extras": [],
+      "payments": [],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "expected": {
+      "totalCents": 0,
+      "personTotalsCents": [
+        0,
+        0
+      ],
+      "balancesCents": [
+        0,
+        0
+      ],
+      "transfers": []
+    }
+  }
+]

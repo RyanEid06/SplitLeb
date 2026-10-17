@@ -194,7 +194,9 @@ export function upsertPaymentForPerson(params: {
     ];
   }
 
-  return params.payments.map((payment) =>
+  return params.payments.filter((payment, index) =>
+    payment.personId !== params.personId || index === params.payments.indexOf(existingPayment),
+  ).map((payment) =>
     payment.personId === params.personId
       ? {
           ...payment,

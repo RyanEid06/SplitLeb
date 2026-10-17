@@ -1,296 +1,187 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   calculateItemAllocations,
   validateItem,
 } from "../domain/bill/itemSplits";
-import type { Bill, BillExtra, BillItem } from "../domain/bill/types";
-import { ExtrasPanel } from "../features/extras/ExtrasPanel";
+import { validateExtra } from "../domain/bill/extras";
 import { ItemsPanel } from "../features/items/ItemsPanel";
-import {
-  openBill,
-  saveBill,
-  updateBillStatus,
-} from "../storage/billStorage";
-import type { StoredBill } from "../storage/db";
+import { ExtrasPanel } from "../features/extras/ExtrasPanel";
+import { useBillEditor } from "../features/bills/useBillEditor";
+import { Avatar } from "../components/ui/Avatar";
+import { Icon } from "../components/ui/Icon";
 
 export function BillWorkspacePage() {
-  const navigate = useNavigate();
   const { billId } = useParams();
-
-  const [bill, setBill] = useState<StoredBill | null>(null);
-  const [isLoadingBill, setIsLoadingBill] = useState(Boolean(billId));
-  const [loadError, setLoadError] = useState("");
-  const [saveMessage, setSaveMessage] = useState("");
-
-  useEffect(() => {
-    if (!billId) {
-      setIsLoadingBill(false);
-      return;
-    }
-
-    const currentBillId = billId;
-
-    async function loadBill() {
-      setIsLoadingBill(true);
-      setLoadError("");
-
-      const savedBill = await openBill(currentBillId);
-
-      if (!savedBill) {
-        setLoadError("Saved bill not found.");
-        setBill(null);
-        setIsLoadingBill(false);
-        return;
-      }
-
-      setBill(savedBill);
-      setIsLoadingBill(false);
-    }
-
-    void loadBill();
-  }, [billId]);
-
-  async function handleSaveDraft() {
-    if (!bill) return;
-
-    const savedBill = await saveBill(bill, "draft");
-    setBill(savedBill);
-    setSaveMessage("Saved as draft.");
-  }
-
-  async function handleSaveActive() {
-    if (!bill) return;
-
-    const nextStatus = bill.status === "draft" ? "active" : bill.status;
-
-    const savedBill = await saveBill(bill, nextStatus);
-    setBill(savedBill);
-    setSaveMessage("Saved.");
-  }
-
-  async function handleMarkSettled() {
-    if (!bill) return;
-
-    const savedBill = await updateBillStatus(bill.id, "settled");
-
-    if (!savedBill) {
-      setSaveMessage("");
-      setLoadError("Could not mark this bill as settled.");
-      return;
-    }
-
-    setBill(savedBill);
-    setSaveMessage("Marked as settled.");
-  }
-
-  async function handleGoToReview() {
-    if (!bill) return;
-
-    const invalidItems = bill.items
-      .map((item) => ({
-        item,
-        errors: validateItem(item, bill.people),
-      }))
-      .filter((result) => result.errors.length > 0);
-
-    if (invalidItems.length > 0) {
-      const firstInvalidItem = invalidItems[0];
-
-      setSaveMessage("");
-      setLoadError(
-        `Fix item "${firstInvalidItem.item.name}" before review: ${firstInvalidItem.errors[0]}`,
-      );
-      return;
-    }
-
-    const savedBill = await saveBill(bill, bill.status);
-    setBill(savedBill);
-    navigate(`/bills/${savedBill.id}/review`);
-  }
-
-  function updateBillNote(note: string) {
-    setSaveMessage("");
-    setLoadError("");
-
-    setBill((currentBill) => {
-      if (!currentBill) {
-        return currentBill;
-      }
-
-      return {
-        ...currentBill,
-        note: note.trim().length > 0 ? note : undefined,
-        updatedAt: new Date().toISOString(),
-      };
-    });
-  }
-
-  function updateItems(items: BillItem[]) {
-    setSaveMessage("");
-    setLoadError("");
-
-    setBill((currentBill) => {
-      if (!currentBill) {
-        return currentBill;
-      }
-
-      return {
-        ...currentBill,
-        items,
-        updatedAt: new Date().toISOString(),
-      };
-    });
-  }
-
-  function updateExtras(extras: BillExtra[]) {
-    setSaveMessage("");
-    setLoadError("");
-
-    setBill((currentBill) => {
-      if (!currentBill) {
-        return currentBill;
-      }
-
-      return {
-        ...currentBill,
-        extras,
-        updatedAt: new Date().toISOString(),
-      };
-    });
-  }
-
-  if (isLoadingBill) {
-    return (
-      <main className="bill-workspace-page">
-        <section className="card">
-          <p>Loading bill...</p>
-        </section>
-      </main>
+  const navigate = useNavigate();
+  const { bill, loading, error, dirty, saving, change, save } =
+    useBillEditor(billId);
+  const [validationError, setValidationError] = useState("");
+  const subtotals = useMemo(() => {
+    const totals: Record<string, number> = Object.fromEntries(
+      (bill?.people ?? []).map((person) => [person.id, 0]),
     );
+    for (const item of bill?.items ?? [])
+      for (const allocation of calculateItemAllocations(item, bill!.people))
+        totals[allocation.personId] =
+          (totals[allocation.personId] ?? 0) + allocation.amountCents;
+    return totals;
+  }, [bill]);
+  async function review() {
+    if (!bill) return;
+    const issue =
+      bill.items.flatMap((item) =>
+        validateItem(item, bill.people).map(
+          (message) => item.name + ": " + message,
+        ),
+      )[0] ||
+      bill.extras.flatMap((extra) =>
+        validateExtra(extra, bill.people).map(
+          (message) => extra.name + ": " + message,
+        ),
+      )[0];
+    if (issue) {
+      setValidationError(issue);
+      return;
+    }
+    setValidationError("");
+    const saved = await save();
+    if (saved) navigate("/bills/" + saved.id + "/review");
   }
-
-  if (!bill) {
+  if (loading) return <p role="status">Opening your bill…</p>;
+  if (!bill)
     return (
-      <main className="bill-workspace-page">
-        <section className="card">
-          <h1>Bill workspace</h1>
-          <p>
-            No saved bill was found for <strong>{billId}</strong>.
-          </p>
-          {loadError ? <p className="form-error">{loadError}</p> : null}
-          <Link className="button button-primary" to="/bills/new">
-            Create a new bill
-          </Link>
-        </section>
-      </main>
+      <section className="page">
+        <h1>Bill unavailable</h1>
+        <p role="alert" className="form-error">
+          {error}
+        </p>
+        <Link to="/history">Back to history</Link>
+      </section>
     );
-  }
-
-  const itemSubtotalByPersonId = calculateItemSubtotalByPersonId(bill);
-
   return (
-    <main className="bill-workspace-page">
+    <section className="bill-workspace-page">
       <header className="workspace-header">
         <div>
-          <p>{bill.status === "settled" ? "Settled bill" : "Saved bill"}</p>
+          <p className="eyebrow">
+            {bill.status === "settled" ? "Settled" : "Split the bill"}
+          </p>
           <h1>{bill.title}</h1>
           <p>
-            Currency: <strong>{bill.currency}</strong> · People:{" "}
-            <strong>{bill.people.length}</strong> · Items:{" "}
-            <strong>{bill.items.length}</strong> · Extras:{" "}
-            <strong>{bill.extras.length}</strong> · Status:{" "}
-            <strong>{bill.status}</strong>
+            {bill.currency} · {bill.people.length} people
           </p>
         </div>
-
         <div className="workspace-actions">
-          <button type="button" onClick={() => void handleSaveDraft()}>
-            Save draft
-          </button>
-
-          <button type="button" onClick={() => void handleSaveActive()}>
+          <span className="save-status" role="status">
+            {saving
+              ? "Saving…"
+              : dirty
+                ? "Unsaved changes"
+                : "Saved on this device"}
+          </span>
+          <button
+            disabled={saving}
+            onClick={() =>
+              void save(bill.status === "draft" ? "active" : bill.status)
+            }
+          >
             Save bill
           </button>
-
-          <button type="button" onClick={() => void handleMarkSettled()}>
-            Mark settled
+          <button
+            className="button-primary desktop-review-action"
+            disabled={saving}
+            onClick={() => void review()}
+          >
+            Review bill <Icon name="arrow" />
           </button>
-
-          <button type="button" onClick={() => void handleGoToReview()}>
-            Review
-          </button>
-
-          <button type="button" onClick={() => navigate("/history")}>
-            History
-          </button>
-
-          <Link className="button" to="/bills/new">
-            Create another bill
-          </Link>
         </div>
       </header>
-
-      {saveMessage ? <p className="success-message">{saveMessage}</p> : null}
-      {loadError ? <p className="form-error">{loadError}</p> : null}
-
-      <section className="bill-note-card">
-        <label>
-          Bill note
-          <textarea
-            value={bill.note ?? ""}
-            onChange={(event) => updateBillNote(event.target.value)}
-            placeholder="Optional reminder, context, or payment note."
-            rows={3}
-          />
-        </label>
-      </section>
-
-      <div className="workspace-grid">
-        <section className="people-summary-card">
-          <h2>People</h2>
-
-          <ul>
-            {bill.people.map((person) => (
-              <li key={person.id}>
-                {person.emoji ?? "🙂"} {person.name}
-              </li>
-            ))}
-          </ul>
-        </section>
-
+      {error || validationError ? (
+        <p className="form-error" role="alert">
+          {error || validationError}
+        </p>
+      ) : null}
+      <div className="workspace-people" aria-label="People sharing this bill">
+        {bill.people.map((person) => (
+          <span className="person-chip" key={person.id}>
+            <Avatar
+              name={person.name}
+              emoji={person.emoji}
+              color={person.color}
+            />
+            {person.name}
+          </span>
+        ))}
+      </div>
+      <fieldset disabled={saving} className="workspace-grid">
         <ItemsPanel
           people={bill.people}
           items={bill.items}
           currency={bill.currency}
-          onItemsChange={updateItems}
+          onItemsChange={(items) => {
+            setValidationError("");
+            change({ items });
+          }}
         />
-
-        <ExtrasPanel
-          people={bill.people}
-          extras={bill.extras}
-          itemSubtotalByPersonId={itemSubtotalByPersonId}
-          currency={bill.currency}
-          onExtrasChange={updateExtras}
-        />
+        <details
+          className="workspace-disclosure"
+          open={bill.extras.length > 0 || undefined}
+        >
+          <summary>
+            Extras & discounts
+            {bill.extras.length ? " (" + bill.extras.length + ")" : ""}
+          </summary>
+          <ExtrasPanel
+            people={bill.people}
+            extras={bill.extras}
+            currency={bill.currency}
+            itemSubtotalByPersonId={subtotals}
+            onExtrasChange={(extras) => {
+              setValidationError("");
+              change({ extras });
+            }}
+          />
+        </details>
+        <details className="workspace-disclosure">
+          <summary>Note & bill options</summary>
+          <label>
+            Bill note
+            <textarea
+              value={bill.note ?? ""}
+              rows={2}
+              placeholder="Add a reminder"
+              onChange={(event) =>
+                change({ note: event.target.value || undefined })
+              }
+            />
+          </label>
+          <div className="button-row">
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => void save("draft")}
+            >
+              Save as draft
+            </button>
+            {bill.status === "settled" ? (
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => void save("active")}
+              >
+                Reopen bill
+              </button>
+            ) : null}
+            <Link className="button" to="/history">
+              History
+            </Link>
+          </div>
+        </details>
+      </fieldset>
+      <div className="mobile-review-action">
+        <span className="save-status">{dirty ? "Unsaved changes" : "Saved"}</span>
+        <button type="button" className="button-primary" disabled={saving} onClick={() => void review()}>Review bill <Icon name="arrow" /></button>
       </div>
-    </main>
+    </section>
   );
-}
-
-function calculateItemSubtotalByPersonId(bill: Bill): Record<string, number> {
-  const subtotalByPersonId: Record<string, number> = Object.fromEntries(
-    bill.people.map((person) => [person.id, 0]),
-  );
-
-  for (const item of bill.items) {
-    const allocations = calculateItemAllocations(item, bill.people);
-
-    for (const allocation of allocations) {
-      subtotalByPersonId[allocation.personId] =
-        (subtotalByPersonId[allocation.personId] ?? 0) + allocation.amountCents;
-    }
-  }
-
-  return subtotalByPersonId;
 }

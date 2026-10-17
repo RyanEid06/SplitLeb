@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Person } from "../../domain/bill/types";
+import { Avatar } from "../../components/ui/Avatar";
 import { createId } from "../../utils/ids";
 
 const PERSON_COLORS = [
@@ -42,11 +43,14 @@ export function PeopleEditor({
     setError("");
   }
 
-  function validatePersonName(nextName: string, currentId?: string): string | null {
+  function validatePersonName(
+    nextName: string,
+    currentId?: string,
+  ): string | null {
     const trimmed = nextName.trim();
 
     if (!trimmed) return "Person name is required.";
-    if (trimmed.length > 40) return "Person name is too long.";
+    if (trimmed.length > 80) return "Person name is too long.";
 
     const duplicate = people.some(
       (person) =>
@@ -141,7 +145,6 @@ export function PeopleEditor({
       <div className="section-heading">
         <div>
           <h2>People</h2>
-          <p>Add everyone who might share items or payments.</p>
         </div>
 
         <span className="count-pill">{people.length} people</span>
@@ -186,40 +189,52 @@ export function PeopleEditor({
           />
         </div>
 
-        <div className="field">
-          <label>Emoji</label>
-          <div className="emoji-row">
-            {QUICK_EMOJIS.map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={emoji === option ? "emoji-button selected" : "emoji-button"}
-                onClick={() => setEmoji(option)}
-                aria-label={`Choose ${option}`}
-              >
-                {option}
-              </button>
-            ))}
+        <details className="form-disclosure">
+          <summary>Personalize (optional)</summary>
+          <div className="field">
+            <span>Emoji</span>
+            <div className="emoji-row">
+              {QUICK_EMOJIS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={
+                    emoji === option ? "emoji-button selected" : "emoji-button"
+                  }
+                  onClick={() => setEmoji(option)}
+                  aria-label={`Choose ${option}`}
+                  aria-pressed={emoji === option}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="field">
-          <label>Color</label>
-          <div className="color-row">
-            {PERSON_COLORS.map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={color === option ? "color-button selected" : "color-button"}
-                style={{ backgroundColor: option }}
-                onClick={() => setColor(option)}
-                aria-label={`Choose color ${option}`}
-              />
-            ))}
+          <div className="field">
+            <span>Color</span>
+            <div className="color-row">
+              {PERSON_COLORS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={
+                    color === option ? "color-button selected" : "color-button"
+                  }
+                  style={{ backgroundColor: option }}
+                  onClick={() => setColor(option)}
+                  aria-label={`Choose color ${option}`}
+                  aria-pressed={color === option}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-
-        {error ? <p className="form-error">{error}</p> : null}
+        </details>
+        {error ? (
+          <p role="alert" className="form-error">
+            {error}
+          </p>
+        ) : null}
 
         <div className="form-actions">
           <button type="submit" className="primary-button">
@@ -227,7 +242,11 @@ export function PeopleEditor({
           </button>
 
           {editingId ? (
-            <button type="button" className="secondary-button" onClick={resetForm}>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={resetForm}
+            >
               Cancel edit
             </button>
           ) : null}
@@ -244,16 +263,14 @@ export function PeopleEditor({
           sortedPeople.map((person) => (
             <div className="person-card" key={person.id}>
               <div className="person-main">
-                <span
-                  className="person-avatar"
-                  style={{ backgroundColor: person.color ?? "#64748b" }}
-                >
-                  {person.emoji ?? "🙂"}
-                </span>
+                <Avatar
+                  name={person.name}
+                  emoji={person.emoji}
+                  color={person.color}
+                />
 
                 <div>
                   <strong>{person.name}</strong>
-                  <p>Ready for item assignment later.</p>
                 </div>
               </div>
 

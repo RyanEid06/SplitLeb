@@ -10,6 +10,7 @@ import {
 } from "../domain/groups/savedGroups";
 import type { SavedGroup, SavedGroupMember } from "../domain/groups/types";
 import { getDb, type BillStatus, type StoredBill } from "./db";
+import { hasBillRecordStructure } from "./backupValidation";
 
 type BillInput = Bill & {
   id?: string;
@@ -280,7 +281,8 @@ function isStoredBill(value: unknown): value is StoredBill {
     Array.isArray(value.payments) &&
     typeof value.createdAt === "string" &&
     typeof value.updatedAt === "string" &&
-    isBillStatus(value.status)
+    isBillStatus(value.status) &&
+    hasBillRecordStructure(value)
   );
 }
 

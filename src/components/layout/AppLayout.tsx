@@ -1,88 +1,67 @@
-import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
-
-const navItems = [
-  { to: "/", label: "Home", end: true },
-  { to: "/bills/new", label: "New bill" },
-  { to: "/groups", label: "Saved groups" },
-  { to: "/history", label: "History" },
-];
-
-function shouldStartCollapsed() {
-  if (typeof window === "undefined") return false;
-
-  return window.matchMedia("(max-width: 760px)").matches;
-}
-
+import { useEffect, useRef } from "react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Icon } from "../ui/Icon";
+import { PwaStatus } from "./PwaStatus";
+const destinations = [
+  { to: "/", label: "Home", icon: "home", end: true },
+  { to: "/bills/new", label: "New bill", icon: "plus" },
+  { to: "/groups", label: "Groups", icon: "groups" },
+  { to: "/history", label: "History", icon: "history" },
+] as const;
 export function AppLayout() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] =
-    useState(shouldStartCollapsed);
-
-  function closeSidebarOnSmallScreen() {
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(max-width: 760px)").matches
-    ) {
-      setIsSidebarCollapsed(true);
-    }
-  }
-
+  const location = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    mainRef.current?.focus({ preventScroll: true });
+    window.scrollTo(0, 0);
+    const title = document.querySelector("h1")?.textContent;
+    document.title = title ? title + " · SplitLeb" : "SplitLeb";
+  }, [location.pathname]);
   return (
-    <div
-      className={
-        isSidebarCollapsed
-          ? "app-shell app-shell-sidebar-collapsed"
-          : "app-shell"
-      }
-    >
-      <button
-        type="button"
-        className="sidebar-toggle-button"
-        onClick={() => setIsSidebarCollapsed((current) => !current)}
-        aria-label={isSidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
-        aria-expanded={!isSidebarCollapsed}
-        aria-controls="primary-sidebar"
-        title={isSidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
-      >
-        ☰
-      </button>
-
-      <aside id="primary-sidebar" className="sidebar">
-        <div className="brand">
-          <div className="brand-mark">SL</div>
-          <div>
+    <div className="app-shell">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
+      <aside className="sidebar">
+        <Link to="/" className="brand" aria-label="SplitLeb home">
+          <span className="brand-mark" aria-hidden="true">
+            SL
+            <span />
+          </span>
+          <span>
             <strong>SplitLeb</strong>
-            <span>Local bill splitter</span>
-          </div>
-        </div>
-
+            <small>A fair share.</small>
+          </span>
+        </Link>
         <nav className="nav-list" aria-label="Main navigation">
-          {navItems.map((item) => (
+          {destinations.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.end}
-              onClick={closeSidebarOnSmallScreen}
+              end={"end" in item ? item.end : false}
               className={({ isActive }) =>
                 isActive ? "nav-link nav-link-active" : "nav-link"
               }
             >
-              {item.label}
+              <Icon name={item.icon} />
+              <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
+        <p className="sidebar-note">
+          On your device.
+          <br />
+          No account needed.
+        </p>
       </aside>
-
-      {!isSidebarCollapsed ? (
-        <button
-          type="button"
-          className="sidebar-backdrop"
-          aria-label="Close sidebar"
-          onClick={() => setIsSidebarCollapsed(true)}
-        />
-      ) : null}
-
-      <main className="main-area">
+      <header className="mobile-brand">
+        <Link to="/">
+          SplitLeb<span className="brand-period">.</span>
+        </Link>
+        <span>Every share, fair.</span>
+      </header>
+      <main id="main-content" className="main-area" tabIndex={-1} ref={mainRef}>
+        <PwaStatus />
         <Outlet />
       </main>
     </div>

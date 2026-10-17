@@ -1,3 +1,4 @@
+import { MoneyInput } from "../../components/ui/MoneyInput";
 import type {
   CurrencyCode,
   Payment,
@@ -5,12 +6,9 @@ import type {
   PersonSettlementBalance,
   SettlementTransfer,
 } from "../../domain/bill/types";
-import {
-  formatMoneyInputValue,
-  getMoneyInputLabel,
-  parseMoneyInputToCents,
-} from "../../domain/bill/money";
+import { getMoneyInputLabel } from "../../domain/bill/money";
 import { formatMoneyFromCents } from "../../utils/formatting";
+import { getPaymentAmountForPersonCents } from "../../domain/bill/settlements";
 
 type PaymentsAndSettlementPanelProps = {
   currency: CurrencyCode;
@@ -25,9 +23,7 @@ function getPaymentForPersonCents(
   payments: Payment[],
   personId: string,
 ): number {
-  return (
-    payments.find((payment) => payment.personId === personId)?.amountCents ?? 0
-  );
+  return getPaymentAmountForPersonCents(payments, personId);
 }
 
 function noTransfersMessage(paymentStatus: PaymentTotalStatus): string {
@@ -129,26 +125,18 @@ export function PaymentsAndSettlementPanel({
                   </td>
 
                   <td>
-                    <input
-                      className="money-input"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      inputMode="decimal"
-                      value={formatMoneyInputValue(paymentValueCents, currency, {
-                        blankZero: true,
-                      })}
-                      placeholder={currency === "LBP" ? "0" : "0.00"}
-                      aria-label={`${getMoneyInputLabel(
-                        "Paid amount",
-                        currency,
-                      )} for ${balance.personName}`}
-                      onChange={(event) => {
-                        onChangePayment(
-                          balance.personId,
-                          parseMoneyInputToCents(event.target.value, currency),
-                        );
-                      }}
+                    <MoneyInput
+                      amountCents={paymentValueCents}
+                      currency={currency}
+                      blankZero
+                      ariaLabel={
+                        getMoneyInputLabel("Paid amount", currency) +
+                        " for " +
+                        balance.personName
+                      }
+                      onChange={(amount) =>
+                        onChangePayment(balance.personId, amount)
+                      }
                     />
                   </td>
 
