@@ -42,10 +42,13 @@ export function AppLayout() {
       </a>
       <aside className="sidebar">
         <Link to="/" className="brand" aria-label="SplitLeb home">
-          <span className="brand-mark" aria-hidden="true">
-            SL
-            <span />
-          </span>
+          <img
+            className="brand-mark"
+            src="/splitleb-logo.png"
+            alt=""
+            width="40"
+            height="42"
+          />
           <span>
             <strong>SplitLeb</strong>
             <small>A fair share.</small>
@@ -74,7 +77,16 @@ export function AppLayout() {
       </aside>
       <header className="mobile-brand">
         <Link to="/">
-          SplitLeb<span className="brand-period">.</span>
+          <img
+            className="brand-mark"
+            src="/splitleb-logo.png"
+            alt=""
+            width="24"
+            height="24"
+          />
+          <span>
+            SplitLeb<span className="brand-period">.</span>
+          </span>
         </Link>
         <span>Every share, fair.</span>
       </header>

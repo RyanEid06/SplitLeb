@@ -29,24 +29,11 @@
   color: var(--text-muted);
 }
 .brand-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
+  display: block;
+  flex-shrink: 0;
   width: 40px;
   height: 42px;
-  background: var(--primary);
-  color: var(--primary-text);
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 5px;
-}
-.brand-mark span {
-  width: 8px;
-  height: 8px;
-  background: var(--bg);
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  object-fit: contain;
 }
 .nav-list {
   display: grid;
@@ -197,10 +184,17 @@
     border-bottom: 1px solid var(--border);
   }
   .mobile-brand a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 1.25rem;
     font-weight: 650;
     letter-spacing: -0.04em;
     text-decoration: none;
+  }
+  .mobile-brand .brand-mark {
+    width: 24px;
+    height: 24px;
   }
   .mobile-brand > span {
     color: var(--text-muted);
