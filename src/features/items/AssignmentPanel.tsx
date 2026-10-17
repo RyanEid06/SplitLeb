@@ -149,9 +149,10 @@ export function AssignmentPanel({
         </label>
       </details>
 
-      <label>
-        Split method
+      <div className="field">
+        <label htmlFor="split-method">Split method</label>
         <select
+          id="split-method"
           value={currentItem.split.method}
           onChange={(event) =>
             changeMethod(event.target.value as ItemSplit["method"])
@@ -161,7 +162,7 @@ export function AssignmentPanel({
           <option value="shares">Share split</option>
           <option value="custom">Custom amounts</option>
         </select>
-      </label>
+      </div>
 
       {currentItem.split.method === "equal" ? (
         <EqualAssignmentEditor

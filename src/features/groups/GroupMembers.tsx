@@ -1,3 +1,4 @@
+import { useUnsavedChanges } from "../bills/unsavedChanges";
 import { useState, type FormEvent } from "react";
 import type { SavedGroup } from "../../domain/groups/types";
 import {
@@ -10,7 +11,7 @@ import { Avatar } from "../../components/ui/Avatar";
 type Action = (
   operation: () => Promise<SavedGroup | undefined>,
   message: string,
-) => Promise<void>;
+) => Promise<boolean>;
 export function GroupMembers({
   group,
   run,
@@ -23,15 +24,30 @@ export function GroupMembers({
   const [name, setName] = useState("");
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [showArchived, setShowArchived] = useState(false);
+  useUnsavedChanges(
+    Boolean(
+      name ||
+      group.members.some(
+        (member) =>
+          drafts[member.id] !== undefined &&
+          drafts[member.id] !== member.displayName,
+      ),
+    ),
+  );
   const archivedCount = group.members.filter(
     (member) => member.archivedAt,
   ).length;
   function add(event: FormEvent) {
     event.preventDefault();
     if (!name.trim()) return;
-    void run(() => addSavedGroupMember(group.id, name), "Member added.").then(
-      () => setName(""),
-    );
+    const submittedName = name;
+    void run(
+      () => addSavedGroupMember(group.id, submittedName),
+      "Member added.",
+    ).then((success) => {
+      if (success)
+        setName((current) => (current === submittedName ? "" : current));
+    });
   }
   return (
     <section className="group-members">

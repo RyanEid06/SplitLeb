@@ -1,3 +1,4 @@
+import { useUnsavedChanges } from "../features/bills/unsavedChanges";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { Bill, CurrencyCode, Person } from "../domain/bill/types";
@@ -28,6 +29,9 @@ export function NewBillPage() {
   const [groupsError, setGroupsError] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const clearUnsaved = useUnsavedChanges(
+    Boolean(title || people.length || currency !== "USD"),
+  );
   const selectedGroup = groups.find((group) => group.id === groupId);
   const members = selectedGroup
     ? getActiveSavedGroupMembers(selectedGroup)
@@ -99,6 +103,7 @@ export function NewBillPage() {
         updatedAt: now,
       };
       const saved = await saveBill(bill, "draft");
+      clearUnsaved();
       navigate("/bills/" + saved.id + "/workspace");
     } catch {
       setError("Could not create the bill. Please try again.");
@@ -108,7 +113,7 @@ export function NewBillPage() {
   return (
     <section className="new-bill-page">
       <PageHeader title="New bill" description="Who's sharing this one?" />
-      <div className="setup-grid">
+      <fieldset className="setup-grid" disabled={submitting}>
         <form
           id="bill-setup"
           className="setup-panel bill-details-panel"
@@ -230,7 +235,7 @@ export function NewBillPage() {
             )}
           </section>
         )}
-      </div>
+      </fieldset>
       <div className="setup-footer">
         {error ? (
           <p className="form-error" role="alert">

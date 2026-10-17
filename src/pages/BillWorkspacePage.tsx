@@ -180,8 +180,17 @@ export function BillWorkspacePage() {
         </details>
       </fieldset>
       <div className="mobile-review-action">
-        <span className="save-status">{dirty ? "Unsaved changes" : "Saved"}</span>
-        <button type="button" className="button-primary" disabled={saving} onClick={() => void review()}>Review bill <Icon name="arrow" /></button>
+        <span className="save-status">
+          {dirty ? "Unsaved changes" : "Saved"}
+        </span>
+        <button
+          type="button"
+          className="button-primary"
+          disabled={saving}
+          onClick={() => void review()}
+        >
+          Review bill <Icon name="arrow" />
+        </button>
       </div>
     </section>
   );

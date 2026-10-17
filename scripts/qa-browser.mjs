@@ -2,6 +2,7 @@ import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
+import fixtures from "../src/domain/bill/fixtures/golden-bills.json" with { type: "json" };
 
 const base = process.argv[2] || "http://127.0.0.1:5174";
 await mkdir("output/playwright", { recursive: true });
@@ -99,8 +100,17 @@ try {
     .waitFor();
   const workspace = page.url();
   await page.getByLabel("Item", { exact: true }).fill("Dinner");
-  await page.getByLabel("Unit price", { exact: true }).fill("10.01");
-  await page.getByRole("button", { name: "Add item", exact: true }).click();
+  await page.getByLabel("Item", { exact: true }).press("Enter");
+  assert.ok(
+    await page
+      .getByLabel("Qty", { exact: true })
+      .evaluate((element) => element === document.activeElement),
+  );
+  await page.getByLabel("Qty", { exact: true }).press("Enter");
+  await page
+    .getByLabel("Unit price", { exact: true })
+    .pressSequentially("10.01");
+  await page.getByLabel("Unit price", { exact: true }).press("Enter");
   await page.getByRole("button", { name: "Split Dinner", exact: true }).click();
   await page.getByRole("dialog").waitFor();
   await axe("assignment");
@@ -119,6 +129,39 @@ try {
   assert.equal(page.url(), workspace);
   check(
     "Dirty navigation is cancelled without losing the receipt; dialog Escape restores focus",
+  );
+  await page.getByRole("button", { name: "Split Dinner", exact: true }).click();
+  await page.getByLabel("Split method", { exact: true }).selectOption("shares");
+  await page
+    .getByRole("dialog")
+    .getByLabel("Ryan", { exact: true })
+    .fill("1.5");
+  await page.getByRole("dialog").getByLabel("Jad", { exact: true }).fill("2.5");
+  assert.equal(
+    await page
+      .getByRole("dialog")
+      .getByLabel("Ryan", { exact: true })
+      .inputValue(),
+    "1.5",
+  );
+  await page.getByLabel("Split method", { exact: true }).selectOption("custom");
+  await page.getByLabel("Custom amount for Ryan", { exact: true }).fill("1.01");
+  await page.getByLabel("Custom amount for Jad", { exact: true }).fill("1");
+  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await page.getByRole("button", { name: "Review bill", exact: true }).click();
+  assert.equal(page.url(), workspace);
+  await page.getByRole("alert").waitFor();
+  await page.getByRole("button", { name: "Split Dinner", exact: true }).click();
+  await page.getByLabel("Split method", { exact: true }).selectOption("equal");
+  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await page.getByText("Extras & discounts", { exact: true }).click();
+  await page.getByRole("button", { name: "+ Tip", exact: true }).click();
+  await page.getByLabel("Amount", { exact: true }).fill("1");
+  await page.getByRole("button", { name: "+ Discount", exact: true }).click();
+  await page.getByLabel("Amount", { exact: true }).last().fill("1");
+  await axe("workspace-extras");
+  check(
+    "Fractional shares, invalid custom totals and tip/discount entry work without weakening financial validation",
   );
   await page.getByRole("button", { name: "Review bill", exact: true }).click();
   await page.getByRole("heading", { name: "Review & settle" }).waitFor();
@@ -155,6 +198,16 @@ try {
   await page.getByLabel("Add member", { exact: true }).fill("Ryan");
   await page.getByRole("button", { name: "Add member", exact: true }).click();
   await page.getByText("Member added.", { exact: true }).waitFor();
+  await page.getByLabel("Add member", { exact: true }).fill("Ryan");
+  await page.getByRole("button", { name: "Add member", exact: true }).click();
+  await page
+    .getByText("That name is already in this group.", { exact: true })
+    .waitFor();
+  assert.equal(
+    await page.getByLabel("Add member", { exact: true }).inputValue(),
+    "Ryan",
+    "A failed member write must keep the entered name",
+  );
   await page.getByLabel("Add member", { exact: true }).fill("Jad");
   await page.getByRole("button", { name: "Add member", exact: true }).click();
   await page.locator(".group-member").filter({ hasText: "Jad" }).waitFor();
@@ -234,6 +287,7 @@ try {
         for (const name of ["Members", "Balances", "Stats", "Activity"]) {
           await page.getByRole("button", { name, exact: true }).click();
           await noOverflow(width + " group " + name);
+          if (width === 390) await axe("group-" + name.toLowerCase());
         }
       }
     }
@@ -250,11 +304,63 @@ try {
     });
     check("Responsive workflows: " + width + "px");
   }
+  await page.goto(base + "/history");
+  const edgeFixtures = fixtures.filter((fixture) =>
+    [
+      "twenty-one-people-duplicate-names",
+      "large-lbp",
+      "one-cent-payer-not-consuming",
+    ].includes(fixture.name),
+  );
+  const edgeBackup = {
+    appName: "SplitLeb",
+    schemaVersion: 1,
+    exportedAt: new Date().toISOString(),
+    bills: edgeFixtures.map((fixture) => ({
+      ...fixture.bill,
+      status: "active",
+      title: fixture.bill.title + " — " + "Long bill name ".repeat(12),
+    })),
+  };
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "edge-backup.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(edgeBackup)),
+  });
+  await page.getByText(/Imported 3 bills and 0 groups/).waitFor();
+  for (const width of [320, 390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const fixture of edgeFixtures) {
+      await page.goto(base + "/bills/" + fixture.bill.id + "/review");
+      await page.getByRole("heading", { name: "Review & settle" }).waitFor();
+      await noOverflow(width + " " + fixture.name);
+      await page.locator(".review-person-row").first().click();
+      await noOverflow(width + " expanded " + fixture.name);
+      if (width === 320) await axe("edge-" + fixture.name);
+    }
+  }
+  check(
+    "Legacy import with 21 people, duplicate/long names, long bill titles, large LBP and a one-cent payer passes narrow-screen and axe checks",
+  );
+  await page.goto(base + "/bills/missing-bill/workspace");
+  await page.getByRole("heading", { name: "Bill unavailable" }).waitFor();
+  assert.ok(!(await page.locator("body").innerText()).includes("missing-bill"));
+  await page.goto(base + "/not-a-real-route");
+  await page.getByRole("heading", { name: "Page not found" }).waitFor();
+  await axe("not-found");
+  check(
+    "Missing bill and unknown route have useful error states without internal IDs",
+  );
   assert.deepEqual(errors, []);
   check("No browser runtime errors");
   await writeFile(
     "output/playwright/browser-results.json",
-    JSON.stringify({ base, evidence, errors }, null, 2),
+    JSON.stringify(
+      { base, browserVersion: browser.version(), evidence, errors },
+      null,
+      2,
+    ),
   );
 } finally {
   await browser.close();

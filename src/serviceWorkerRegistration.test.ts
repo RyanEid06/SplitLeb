@@ -7,14 +7,12 @@ afterEach(() => {
 });
 function environment(production: boolean, port: string) {
   vi.stubEnv("PROD", production);
-  const register = vi
-    .fn()
-    .mockResolvedValue(
-      Object.assign(new EventTarget(), {
-        update: vi.fn().mockResolvedValue(undefined),
-        waiting: null,
-      }),
-    );
+  const register = vi.fn().mockResolvedValue(
+    Object.assign(new EventTarget(), {
+      update: vi.fn().mockResolvedValue(undefined),
+      waiting: null,
+    }),
+  );
   vi.stubGlobal(
     "window",
     Object.assign(new EventTarget(), {
@@ -36,7 +34,10 @@ describe("service worker environment", () => {
   it("observes a worker already installing when registration resolves", async () => {
     const register = environment(true, "4173");
     const worker = Object.assign(new EventTarget(), { state: "installing" });
-    const registration = Object.assign(new EventTarget(), { installing: worker, waiting: null as EventTarget | null });
+    const registration = Object.assign(new EventTarget(), {
+      installing: worker,
+      waiting: null as EventTarget | null,
+    });
     register.mockResolvedValue(registration);
     const announce = vi.fn();
     window.addEventListener("splitleb:update", announce);

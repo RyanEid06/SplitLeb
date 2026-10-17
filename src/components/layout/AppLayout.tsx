@@ -1,5 +1,12 @@
+import { hasUnsavedChanges } from "../../features/bills/unsavedChanges";
 import { useEffect, useRef } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useBlocker,
+} from "react-router-dom";
 import { Icon } from "../ui/Icon";
 import { PwaStatus } from "./PwaStatus";
 const destinations = [
@@ -10,6 +17,17 @@ const destinations = [
 ] as const;
 export function AppLayout() {
   const location = useLocation();
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      hasUnsavedChanges() && currentLocation.pathname !== nextLocation.pathname,
+  );
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      if (window.confirm("Leave without saving your changes?"))
+        blocker.proceed();
+      else blocker.reset();
+    }
+  }, [blocker]);
   const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
     mainRef.current?.focus({ preventScroll: true });

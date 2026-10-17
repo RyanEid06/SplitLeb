@@ -1,3 +1,4 @@
+import { useUnsavedChanges } from "../bills/unsavedChanges";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { SavedGroup } from "../../domain/groups/types";
@@ -31,6 +32,7 @@ export function GroupDetail({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [name, setName] = useState(group.name);
+  useUnsavedChanges(name !== group.name);
   useEffect(() => {
     let active = true;
     listBillsByGroupId(group.id)
@@ -57,7 +59,7 @@ export function GroupDetail({
     operation: () => Promise<SavedGroup | undefined>,
     success: string,
   ) {
-    if (busy) return;
+    if (busy) return false;
     setBusy(true);
     setError("");
     setMessage("");
@@ -66,12 +68,14 @@ export function GroupDetail({
       if (!updated) throw new Error("This group could not be found.");
       onUpdate(updated);
       setMessage(success);
+      return true;
     } catch (error) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Could not save. Please try again.",
+        error instanceof Error && error.message.includes("duplicate")
+          ? "That name is already in this group."
+          : "Could not save this group. Your changes are still here; please try again.",
       );
+      return false;
     } finally {
       setBusy(false);
     }

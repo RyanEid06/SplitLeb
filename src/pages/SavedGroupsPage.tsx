@@ -1,3 +1,4 @@
+import { useUnsavedChanges } from "../features/bills/unsavedChanges";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { SavedGroup } from "../domain/groups/types";
@@ -12,6 +13,7 @@ export function SavedGroupsPage() {
   const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const clearUnsaved = useUnsavedChanges(Boolean(name));
   useEffect(() => {
     let active = true;
     listSavedGroups({ includeArchived: true })
@@ -32,12 +34,14 @@ export function SavedGroupsPage() {
   async function create(event: React.FormEvent) {
     event.preventDefault();
     if (creating) return;
+    const submittedName = name;
     setCreating(true);
     setError("");
     try {
       const group = await createSavedGroup({ name });
       setGroups((current) => [group, ...(current ?? [])]);
-      setName("");
+      setName((current) => (current === submittedName ? "" : current));
+      if (name === submittedName) clearUnsaved();
       setQuery({ group: group.id }, { replace: true });
     } catch (error) {
       setError(
@@ -71,6 +75,7 @@ export function SavedGroupsPage() {
               New group
               <input
                 id="new-group-name"
+                disabled={creating}
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Dinner crew"

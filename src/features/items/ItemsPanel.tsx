@@ -1,3 +1,4 @@
+import { useUnsavedChanges } from "../bills/unsavedChanges";
 import { MoneyInput } from "../../components/ui/MoneyInput";
 import { DecimalInput } from "../../components/ui/DecimalInput";
 import { useRef, useState, type FormEvent } from "react";
@@ -26,7 +27,12 @@ export function ItemsPanel({ people, items, currency, onItemsChange }: Props) {
   const [draft, setDraft] = useState({ name: "", quantity: "1", price: "" });
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  useUnsavedChanges(
+    Boolean(draft.name || draft.price || draft.quantity !== "1"),
+  );
   const nameRef = useRef<HTMLInputElement>(null);
+  const quantityRef = useRef<HTMLInputElement>(null);
+  const priceRef = useRef<HTMLInputElement>(null);
   const selected = items.find((item) => item.id === selectedId);
   function update(id: string, patch: Partial<BillItem>) {
     onItemsChange(
@@ -91,6 +97,13 @@ export function ItemsPanel({ people, items, currency, onItemsChange }: Props) {
           Item
           <input
             ref={nameRef}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                quantityRef.current?.focus();
+                quantityRef.current?.select();
+              }
+            }}
             value={draft.name}
             onChange={(event) =>
               setDraft({ ...draft, name: event.target.value })
@@ -101,6 +114,14 @@ export function ItemsPanel({ people, items, currency, onItemsChange }: Props) {
         <label>
           Qty
           <input
+            ref={quantityRef}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                priceRef.current?.focus();
+                priceRef.current?.select();
+              }
+            }}
             inputMode="decimal"
             value={draft.quantity}
             onChange={(event) =>
@@ -111,6 +132,7 @@ export function ItemsPanel({ people, items, currency, onItemsChange }: Props) {
         <label>
           {getMoneyInputLabel("Unit price", currency)}
           <input
+            ref={priceRef}
             inputMode="decimal"
             value={draft.price}
             onChange={(event) =>

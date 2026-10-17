@@ -1,7 +1,7 @@
 {
   "name": "splitleb",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0-preview.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,9 @@
     "typecheck": "tsc -b",
     "qa:browser": "node scripts/qa-browser.mjs",
     "qa:pwa": "node scripts/qa-pwa.mjs",
-    "format": "prettier --write src scripts vite.config.ts index.html public/manifest.webmanifest"
+    "format": "prettier --write src scripts vite.config.ts index.html public/manifest.webmanifest",
+    "qa:prepare-v1": "node scripts/prepare-v1-qa.mjs",
+    "qa:unsaved": "node scripts/qa-unsaved.mjs"
   },
   "dependencies": {
     "idb": "^8.0.3",

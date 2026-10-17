@@ -1,11 +1,28 @@
 .workspace-header .workspace-actions {
   justify-content: flex-end;
 }
-.mobile-review-action { display: none; }
+.mobile-review-action {
+  display: none;
+}
 @media (max-width: 760px) {
-  .desktop-review-action { display: none; }
-  .bill-workspace-page { padding-bottom: 64px; }
-  .mobile-review-action { position: fixed; display: flex; justify-content: space-between; gap: 16px; align-items: center; inset: auto 0 calc(68px + env(safe-area-inset-bottom)); z-index: 19; padding: 8px 16px; border-top: 1px solid var(--border); background: var(--bg); }
+  .desktop-review-action {
+    display: none;
+  }
+  .bill-workspace-page {
+    padding-bottom: 64px;
+  }
+  .mobile-review-action {
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    inset: auto 0 calc(68px + env(safe-area-inset-bottom));
+    z-index: 19;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
 }
 .save-status {
   color: var(--text-muted);
@@ -43,10 +60,9 @@
 }
 .quick-item-form {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(60px, 0.5fr) minmax(
-      100px,
-      1fr
-    ) auto;
+  grid-template-columns:
+    minmax(0, 2fr) minmax(60px, 0.5fr) minmax(100px, 1fr)
+    auto;
   gap: 12px;
   align-items: end;
   margin: 20px 0;

@@ -38,10 +38,9 @@ dd {
 .review-column-labels,
 .review-person-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(
-      0,
-      0.8fr
-    ) minmax(0, 1fr) 84px;
+  grid-template-columns:
+    minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 0.8fr)
+    minmax(0, 1fr) 84px;
   gap: 16px;
 }
 .review-column-labels {

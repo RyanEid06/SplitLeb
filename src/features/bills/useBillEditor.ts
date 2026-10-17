@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useBlocker } from "react-router-dom";
-import { getBill } from "../../storage/billStorage";
+import { useUnsavedChanges } from "./unsavedChanges";
+import { useEffect, useRef, useState } from "react";
+import { getBill, getBillTitle } from "../../storage/billStorage";
 import { saveBillEdits } from "../../storage/billEdits";
 import type { BillStatus, StoredBill } from "../../storage/db";
 
@@ -19,7 +19,6 @@ export function useBillEditor(billId: string | undefined) {
   });
   const [saving, setSaving] = useState(false);
   const saveInProgress = useRef(false);
-  const allowNavigation = useRef(false);
   const editVersion = useRef(0);
   const loadedId = useRef<string | undefined>(undefined);
   const dirty = Boolean(
@@ -27,15 +26,7 @@ export function useBillEditor(billId: string | undefined) {
     state.saved &&
     JSON.stringify(state.bill) !== JSON.stringify(state.saved),
   );
-  const blocker = useBlocker(
-    useCallback(
-      ({ currentLocation, nextLocation }) =>
-        dirty &&
-        !allowNavigation.current &&
-        currentLocation.pathname !== nextLocation.pathname,
-      [dirty],
-    ),
-  );
+  const clearUnsaved = useUnsavedChanges(dirty);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,10 +35,10 @@ export function useBillEditor(billId: string | undefined) {
         .then((bill) => {
           if (cancelled) return;
           loadedId.current = billId;
-          allowNavigation.current = false;
+          const editable = bill ? { ...bill, title: getBillTitle(bill) } : null;
           setState({
-            bill: bill ?? null,
-            saved: bill ?? null,
+            bill: editable,
+            saved: editable,
             loading: false,
             error: bill ? "" : "This bill could not be found.",
           });
@@ -70,35 +61,7 @@ export function useBillEditor(billId: string | undefined) {
     };
   }, [billId]);
 
-  useEffect(() => {
-    if (blocker.state === "blocked") {
-      if (window.confirm("Leave without saving your changes?"))
-        blocker.proceed();
-      else blocker.reset();
-    }
-  }, [blocker]);
-
-  useEffect(() => {
-    const handleUnload = (event: BeforeUnloadEvent) => {
-      if (dirty) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handleUnload);
-    window.dispatchEvent(
-      new CustomEvent("splitleb:editing", { detail: dirty }),
-    );
-    return () => {
-      window.removeEventListener("beforeunload", handleUnload);
-      window.dispatchEvent(
-        new CustomEvent("splitleb:editing", { detail: false }),
-      );
-    };
-  }, [dirty]);
-
   function change(patch: Partial<StoredBill>) {
-    allowNavigation.current = false;
     editVersion.current += 1;
     setState((current) => ({
       ...current,
@@ -121,7 +84,7 @@ export function useBillEditor(billId: string | undefined) {
       );
       // Navigation happens immediately after this promise resolves, before React
       // necessarily renders the persisted snapshot.
-      allowNavigation.current = editVersion.current === version;
+      if (editVersion.current === version) clearUnsaved();
       setState((current) => {
         if (current.bill?.id !== snapshot.id) return current;
         const bill =

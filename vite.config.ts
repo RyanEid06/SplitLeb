@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -11,6 +11,7 @@ function filesIn(directory: string): string[] {
   );
 }
 export default defineConfig({
+  test: { include: ["src/**/*.test.{ts,tsx}"] },
   plugins: [
     react(),
     {
@@ -27,11 +28,18 @@ export default defineConfig({
         const urls = files.map(
           (file) => "/" + file.replaceAll("\\", "/").replace(/^dist\//, ""),
         );
+        const digests = Object.fromEntries(
+          files.map((file, index) => [
+            urls[index],
+            createHash("sha256").update(readFileSync(file)).digest("hex"),
+          ]),
+        );
         writeFileSync(
           "dist/sw.js",
           template
             .replace("__SPLITLEB_BUILD_ID__", buildId)
-            .replace("__SPLITLEB_PRECACHE__", JSON.stringify(urls)),
+            .replace("__SPLITLEB_PRECACHE__", JSON.stringify(urls))
+            .replace("__SPLITLEB_DIGESTS__", JSON.stringify(digests)),
         );
       },
     },

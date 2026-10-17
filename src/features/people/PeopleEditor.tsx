@@ -1,3 +1,4 @@
+import { useUnsavedChanges } from "../bills/unsavedChanges";
 import { useMemo, useState } from "react";
 import type { Person } from "../../domain/bill/types";
 import { Avatar } from "../../components/ui/Avatar";
@@ -28,16 +29,17 @@ export function PeopleEditor({
   onChange,
 }: PeopleEditorProps) {
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState("🙂");
+  const [emoji, setEmoji] = useState("");
   const [color, setColor] = useState(PERSON_COLORS[0]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
+  useUnsavedChanges(Boolean(name));
   const sortedPeople = useMemo(() => people, [people]);
 
   function resetForm() {
     setName("");
-    setEmoji("🙂");
+    setEmoji("");
     setColor(PERSON_COLORS[0]);
     setEditingId(null);
     setError("");
@@ -116,7 +118,7 @@ export function PeopleEditor({
       {
         id: createId("person"),
         name: person.name.trim(),
-        emoji: person.emoji ?? "🙂",
+        emoji: person.emoji ?? "",
         color: person.color ?? PERSON_COLORS[0],
       },
     ]);
@@ -127,7 +129,7 @@ export function PeopleEditor({
   function startEdit(person: Person) {
     setEditingId(person.id);
     setName(person.name);
-    setEmoji(person.emoji ?? "🙂");
+    setEmoji(person.emoji ?? "");
     setColor(person.color ?? PERSON_COLORS[0]);
     setError("");
   }
@@ -169,7 +171,7 @@ export function PeopleEditor({
                   className="recent-person-avatar"
                   style={{ backgroundColor: person.color ?? PERSON_COLORS[0] }}
                 >
-                  {person.emoji ?? "🙂"}
+                  {person.emoji ?? ""}
                 </span>
                 <span className="recent-person-name">{person.name}</span>
               </button>

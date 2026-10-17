@@ -10,8 +10,8 @@ const colors = {
   green: [57, 90, 67, 255],
   cream: [255, 250, 241, 255],
   sand: [244, 241, 234, 255],
-  purple: [165, 230, 184, 255],
-  violet: [165, 230, 184, 255],
+  accent: [165, 230, 184, 255],
+  accentShade: [165, 230, 184, 255],
 };
 
 function mix(a, b, t) {
@@ -85,7 +85,7 @@ function makeIcon(size) {
 
       const lowerD = diamond(x, y, 0.5 * size, 0.57 * size, 0.31 * size, 0.18 * size);
       if (lowerD <= 1) {
-        color = mix(colors.purple, colors.violet, y / size);
+        color = mix(colors.accent, colors.accentShade, y / size);
       }
 
       const upperD = diamond(x, y, 0.5 * size, 0.43 * size, 0.29 * size, 0.16 * size);

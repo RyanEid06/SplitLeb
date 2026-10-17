@@ -2,6 +2,7 @@
 const CACHE_PREFIX = "splitleb-app-shell-";
 const CACHE_NAME = CACHE_PREFIX + "__SPLITLEB_BUILD_ID__";
 const PRECACHE_URLS = __SPLITLEB_PRECACHE__;
+const PRECACHE_DIGESTS = __SPLITLEB_DIGESTS__;
 const INDEX_URL = "/index.html";
 
 function expectedType(path) {
@@ -27,7 +28,19 @@ async function cacheShell() {
         // Drain each stream as it arrives. Keeping several unread responses
         // open can exhaust the browser's connection pool during installation.
         const body = await response.arrayBuffer();
-        return [url, new Response(body, { status: response.status, headers: response.headers })];
+        const digest = Array.from(
+          new Uint8Array(await crypto.subtle.digest("SHA-256", body)),
+          (byte) => byte.toString(16).padStart(2, "0"),
+        ).join("");
+        if (digest !== PRECACHE_DIGESTS[url])
+          throw new Error("App shell changed during installation");
+        return [
+          url,
+          new Response(body, {
+            status: response.status,
+            headers: response.headers,
+          }),
+        ];
       }),
     );
     for (const [url, response] of responses) await cache.put(url, response);
