@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Capacitor } from "@capacitor/core";
 import {
   hasUnsavedChanges,
   subscribeToUnsavedChanges,
@@ -17,7 +18,21 @@ export function PwaStatus() {
   const [activated, setActivated] = useState(false);
   const disposeActivation = useRef<(() => void) | null>(null);
   useEffect(() => {
-    if (!("serviceWorker" in navigator) || !import.meta.env.PROD) return;
+    const online = () => setOffline(!navigator.onLine);
+    window.addEventListener("online", online);
+    window.addEventListener("offline", online);
+    return () => {
+      window.removeEventListener("online", online);
+      window.removeEventListener("offline", online);
+    };
+  }, []);
+  useEffect(() => {
+    if (
+      Capacitor.isNativePlatform() ||
+      !("serviceWorker" in navigator) ||
+      !import.meta.env.PROD
+    )
+      return;
     let active = true;
     const alreadyControlled = Boolean(navigator.serviceWorker.controller);
     navigator.serviceWorker
@@ -30,23 +45,18 @@ export function PwaStatus() {
       setActivated(false);
       setRegistration((event as CustomEvent<ServiceWorkerRegistration>).detail);
     };
-    const online = () => setOffline(!navigator.onLine);
     const failed = () => setUnavailable(true);
     const installed = () => {
       setRegistration(null);
       if (alreadyControlled || disposeActivation.current) setActivated(true);
     };
     window.addEventListener("splitleb:update", update);
-    window.addEventListener("online", online);
-    window.addEventListener("offline", online);
     window.addEventListener("splitleb:offline-unavailable", failed);
     navigator.serviceWorker.addEventListener("controllerchange", installed);
     return () => {
       active = false;
       disposeActivation.current?.();
       window.removeEventListener("splitleb:update", update);
-      window.removeEventListener("online", online);
-      window.removeEventListener("offline", online);
       window.removeEventListener("splitleb:offline-unavailable", failed);
       navigator.serviceWorker.removeEventListener(
         "controllerchange",

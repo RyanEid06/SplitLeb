@@ -2,6 +2,15 @@
 
 Read this file first after any context reset, then docs/v2/PROGRESS.md and PLAN.md. Update this at every meaningful checkpoint. Preserve discoveries and unresolved leads, not private reasoning transcripts.
 
+## Android follow-up — 2026-10-17
+
+The owner explicitly authorized Capacitor Android integration on `android-app`,
+based on latest remote `v2` at `d465ff0a4cf9dec19b10e7bf33a83cbb75be9622`.
+The older "no Android" and "all work on v2" statements below describe the V2
+web milestone; Android follow-up work belongs only on `android-app`.
+Read [docs/ANDROID.md](docs/ANDROID.md) for the current plan, evidence and next
+steps. Do not merge or deploy. Preserve the financial domain and database.
+
 ## CURRENT STATUS — finished for owner review
 
 - Final branding follow-up, 2026-10-17: newest approved source is Downloads/Mint Community Pie Icon.png (1254x1254). Owner explicitly authorized removal of its baked outer checkerboard. Cleaned public/splitleb-logo.png preserves 1,244,177 retained opaque artwork pixels with zero RGB differences from the approved source; exterior is transparent. Regenerated existing 32px favicon, 192/512px app icons and 512px maskable icon. Removed generator's former dark maskable backdrop; no added background, full mint tile remains within launcher safe circle. App component/CSS/HTML/manifest references unchanged. Fresh build/TypeScript/lint and 123 tests pass; Chromium 1440/390/320px, favicon/manifest decoding, no 404/errors, offline reload/cache and mask padding checks pass. Current screenshots/scripts in ignored output/playwright. Commit/push authorized only for v2; main boundaries unchanged. This supersedes the earlier logo source below.

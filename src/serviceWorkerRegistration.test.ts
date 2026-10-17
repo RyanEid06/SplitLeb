@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { registerServiceWorker } from "./serviceWorkerRegistration";
+import { Capacitor } from "@capacitor/core";
 
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 function environment(production: boolean, port: string) {
   vi.stubEnv("PROD", production);
@@ -31,6 +33,13 @@ function environment(production: boolean, port: string) {
   return register;
 }
 describe("service worker environment", () => {
+  it("never registers a browser worker inside the native APK", async () => {
+    const register = environment(true, "");
+    vi.spyOn(Capacitor, "isNativePlatform").mockReturnValue(true);
+    registerServiceWorker();
+    await Promise.resolve();
+    expect(register).not.toHaveBeenCalled();
+  });
   it("observes a worker already installing when registration resolves", async () => {
     const register = environment(true, "4173");
     const worker = Object.assign(new EventTarget(), { state: "installing" });

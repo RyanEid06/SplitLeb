@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SplitLeb</string>
+    <string name="title_activity_main">SplitLeb</string>
+    <string name="package_name">com.splitleb.app</string>
+    <string name="custom_url_scheme">com.splitleb.app</string>
+</resources>

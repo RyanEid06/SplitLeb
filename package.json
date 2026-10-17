@@ -15,9 +15,18 @@
     "qa:pwa": "node scripts/qa-pwa.mjs",
     "format": "prettier --write src scripts vite.config.ts index.html public/manifest.webmanifest",
     "qa:prepare-v1": "node scripts/prepare-v1-qa.mjs",
-    "qa:unsaved": "node scripts/qa-unsaved.mjs"
+    "qa:unsaved": "node scripts/qa-unsaved.mjs",
+    "android:sync": "npm run build && cap sync android",
+    "android:open": "cap open android",
+    "android:build": "npm run android:sync && node scripts/build-android.mjs",
+    "android:icons": "node scripts/generate-android-icons.mjs"
   },
   "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/filesystem": "8.1.5",
+    "@capacitor/share": "8.0.3",
     "idb": "^8.0.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -26,6 +35,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
+    "@capacitor/cli": "8.5.3",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",

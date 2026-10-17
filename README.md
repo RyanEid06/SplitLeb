@@ -2,6 +2,20 @@
 
 A private, offline-first bill splitter for USD and Lebanese pounds. No account or server is needed.
 
+## Android test branch
+
+`android-app` adds a Capacitor Android host to the completed V2 web application.
+The same React app and IndexedDB database run from assets packaged in the APK.
+See [Android build, architecture and QA](docs/ANDROID.md) for prerequisites,
+commands, test evidence and device checks. This is a debug test milestone;
+permanent release signing follows physical-device QA.
+
+```sh
+npm run android:sync
+npm run android:open
+npm run android:build
+```
+
 ## V2 review branch
 
 All V2 work is on the published [GitHub `v2` review branch](https://github.com/RyanEid06/SplitLeb/tree/v2). Production `main` remains under the owner's control. This branch has not been merged or deployed over production.
@@ -67,7 +81,7 @@ History contains Export backup and Import backup. Clearing site/browser data or 
 
 The database remains `splitleb-local-db` at schema version 2. Backup schema 1 and schema 2 imports are supported; exports remain schema 2. Duplicates are skipped and conflicting groups stop the import. No new database migration or data clearing is introduced by V2.
 
-Portable financial parity cases for a future native implementation live in [golden-bills.json](src/domain/bill/fixtures/golden-bills.json). Native Android is outside this branch.
+Portable financial parity cases live in [golden-bills.json](src/domain/bill/fixtures/golden-bills.json). Android uses these same domain functions through Capacitor.
 
 ## Acceptance limits
 

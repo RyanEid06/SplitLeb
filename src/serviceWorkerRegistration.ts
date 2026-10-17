@@ -1,5 +1,8 @@
+import { Capacitor } from "@capacitor/core";
+
 export function registerServiceWorker() {
   if (
+    Capacitor.isNativePlatform() ||
     !import.meta.env.PROD ||
     typeof window === "undefined" ||
     !("serviceWorker" in navigator)

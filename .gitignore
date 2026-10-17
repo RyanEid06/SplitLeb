@@ -29,3 +29,8 @@ backups/
 # Local browser verification artifacts
 output/
 .playwright-cli/
+
+# Android signing material and machine-specific configuration
+*.jks
+*.keystore
+keystore.properties

@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { saveBackupFile } from "../../platform/backupFile";
+import { Capacitor } from "@capacitor/core";
 import {
   exportAllBills,
   importBillsFromBackup,
@@ -19,18 +21,17 @@ export function BackupPanel({
     setMessage("");
     try {
       const backup = await exportAllBills();
-      const url = URL.createObjectURL(
-        new Blob([JSON.stringify(backup, null, 2)], {
-          type: "application/json",
-        }),
+      const result = await saveBackupFile(
+        "splitleb-backup-" + new Date().toISOString().slice(0, 10) + ".json",
+        JSON.stringify(backup, null, 2),
       );
-      const link = document.createElement("a");
-      link.href = url;
-      link.download =
-        "splitleb-backup-" + new Date().toISOString().slice(0, 10) + ".json";
-      link.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-      setMessage("Backup exported. Keep the file somewhere safe.");
+      setMessage(
+        result === "downloaded"
+          ? "Backup exported. Keep the file somewhere safe."
+          : result === "canceled"
+            ? "Export canceled. Your saved data is unchanged."
+            : "Backup shared. Keep a copy somewhere safe.",
+      );
     } catch {
       setError("Could not export your backup. Please try again.");
     } finally {
@@ -119,8 +120,9 @@ export function BackupPanel({
           Importing merges records; it does not replace your data.
         </p>
         <p>
-          SplitLeb works offline after the first visit. The offline app cache is
-          separate from your saved data.
+          {Capacitor.isNativePlatform()
+            ? "SplitLeb works offline from installation. Uninstalling or clearing app data removes your saved data."
+            : "SplitLeb works offline after the first visit. The offline app cache is separate from your saved data."}
         </p>
       </details>
     </section>
