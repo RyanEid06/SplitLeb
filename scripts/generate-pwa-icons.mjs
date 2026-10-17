@@ -42,10 +42,6 @@ try {
       const context = canvas.getContext("2d");
       context.imageSmoothingEnabled = true;
       context.imageSmoothingQuality = "high";
-      if (maskable) {
-        context.fillStyle = "#101714";
-        context.fillRect(0, 0, size, size);
-      }
       const scale = maskable
         ? (size * 0.38) / radius
         : size / Math.max(image.width, image.height);
