@@ -39,4 +39,10 @@
 - Visual inspection covered representative phone/desktop screens and empty/error/large-money states. Exact evidence and acceptance limits in VERIFICATION.md.
 - Real generated profiles revealed dev watcher EBUSY and exported V1 source affected tool discovery; ignore only generated output/.playwright-cli for Vite/ESLint and scope Vitest to actual src tests. Dev server subsequently stayed healthy during profile creation. Fresh install required stopping our local servers to release Windows native-binding locks; final install succeeded.
 - Root continuity, README, architecture, owner report, scorecard, baseline/final logs and reproduction scripts complete. Immutable verified implementation4270880; documentation afterward does not change built app.
-- Stop with v2 preserved. No push/merge/deploy/tag/production config change. Manual physical-device/SR/cross-browser/hosted acceptance remains explicitly unverified.
+- At the original review checkpoint, v2 was preserved locally with no push/merge/deploy/tag/production config change. Manual physical-device/SR/cross-browser/hosted acceptance remains explicitly unverified.
+
+## Owner-authorized GitHub publication — 2026-10-17
+
+- Owner requested pushing the work to its separate branch. Published `v2` to origin with upstream tracking; application source is unchanged from the verified implementation.
+- Remote `main` was already `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064` before publication. No merge, rebase, force push, deployment or production configuration change.
+- Updated current README/report/verification/continuity status to record publication; earlier implementation checkpoints remain historical.

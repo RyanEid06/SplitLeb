@@ -4,7 +4,7 @@ Read this file first after any context reset, then docs/v2/PROGRESS.md and PLAN.
 
 ## CURRENT STATUS — finished for owner review
 
-- Implementation is complete on `v2`, verified source `4270880e04acf3eba4724336a6d95e8498ce8b92`. Later changes are documentation only. Production main/origin-main remain `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. NEVER merge or deploy without the owner's decision.
+- Implementation is complete on `v2`, verified source `4270880e04acf3eba4724336a6d95e8498ce8b92`. Later changes are documentation only. Owner requested publication on 2026-10-17; `v2` was pushed to https://github.com/RyanEid06/SplitLeb/tree/v2 with upstream tracking. Local main remains `0a1334ed44cde1ef1cb48550fef18a71356f41e1`; remote main independently advanced to `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064` before publication. NEVER merge or deploy without the owner's decision.
 - Read docs/v2/FINAL-REPORT.md and VERIFICATION.md for authoritative final results. Older checkpoint sections below are historical, not current pending work.
 - Fresh locked install190 packages; typecheck clean; lint0/0;123tests/21files green; production build success. Final bundle CSS25.00kB/5.81gzip, JS388.39/117.06gzip.
 - Final Chromium156.0.8078.4 UI suite,7widths,14axechecks0violations,21people/largeLBP/legacybackup/custominvalid/decimal/keyboard/archives/settlement all PASS. Actual V1 UI records→V2 exactfield preservation; persistent browser close/reopen offline and create/groups/review/history/export PASS. Compressed shell, waiting/late/failed/mixed updates and multiple tabs PASS.
@@ -12,7 +12,7 @@ Read this file first after any context reset, then docs/v2/PROGRESS.md and PLAN.
 - PWA install stall was fixed by consuming fetch bodies before collecting responses. Per-file SHA256 prevents deployment races. Aggregate unsaved state covers all local forms; late activation rechecks it. Keep these safety properties.
 - Final install first encountered a Windows native-binding lock from our running preview; stopping own servers freed it and npmci succeeded. Generated browser profiles also exposed a Vite EBUSY watch failure; output/.playwright-cli now excluded from watching/lint/test discovery. Dev server verified stable while final profiles were created.
 - Current preview: http://127.0.0.1:4173. Screenshots/resultJSON/isolated profiles preserved in ignored output/playwright. Reproduce with README commands; prepare-v1-qa uses gitarchive and never checks out main.
-- No persistent automation, APK, backend, AI/account/tracking, push, release tag or production config change.
+- No persistent automation, APK, backend, AI/account/tracking, release tag or production config change. Only the separate `v2` branch was pushed.
 - Open owner decision: explicit save vs autosave state policy (recommend explicit for this review). Dark-first/four destinations/optional naming are implemented choices.
 - Remaining acceptance: actual phone install/touch, screen-reader listening, Safari/Firefox, owner-approved hosted preview, heavy-history performance benchmark. These are candid limits, not unfinished page redesigns.
 - User explicitly requested this root Markdown continuity file. Preserve/update it for follow-up work; do not write global memories without explicit authorization.
@@ -20,7 +20,7 @@ Read this file first after any context reset, then docs/v2/PROGRESS.md and PLAN.
 ## Owner authorization and hard boundaries
 
 - Fully implement the attached owner brief, preserved at docs/v2/OWNER-BRIEF.md. Work continuously inline until complete; final full report required.
-- All work on branch `v2`. Production `main`/`origin/main` originally `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. NEVER merge, deploy, force push, rewrite main or change Cloudflare hosting. No push requested.
+- All work on branch `v2`. Production `main`/`origin/main` originally `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. NEVER merge, deploy, force push, rewrite main or change Cloudflare hosting. Follow-up explicitly authorized pushing the separate `v2` branch.
 - Preserve financial domain, database `splitleb-local-db` version 2, backups schema 1/2, IDs and archived states. No AI, accounts, backend, Android or framework replacement.
 - User additionally asked for durable Markdown continuity in this folder. This file fulfills that request; keep it current.
 

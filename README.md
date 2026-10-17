@@ -4,7 +4,7 @@ A private, offline-first bill splitter for USD and Lebanese pounds. No account o
 
 ## V2 review branch
 
-All V2 work is on `v2`. Production `main` remains under the owner's control. This branch has not been merged, pushed or deployed over production.
+All V2 work is on the published [GitHub `v2` review branch](https://github.com/RyanEid06/SplitLeb/tree/v2). Production `main` remains under the owner's control. This branch has not been merged or deployed over production.
 
 Start with [V2-CONTINUITY.md](V2-CONTINUITY.md) when resuming work. The complete [owner brief](docs/v2/OWNER-BRIEF.md), [baseline audit](docs/v2/AUDIT.md), [architecture](docs/v2/ARCHITECTURE.md), [verification](docs/v2/VERIFICATION.md) and [review report](docs/v2/FINAL-REPORT.md) are kept in the repository.
 

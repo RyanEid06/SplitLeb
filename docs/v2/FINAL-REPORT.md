@@ -5,9 +5,9 @@ The complete Web/PWA V2 pass is implemented on `v2`, with final local verificati
 ## Branch
 
 - Branch: `v2`; verified implementation: `4270880e04acf3eba4724336a6d95e8498ce8b92`.
-- `main`/local `origin/main`: unchanged at `0a1334ed44cde1ef1cb48550fef18a71356f41e1`.
+- Local `main`/cached `origin/main`: unchanged at `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. Remote `main` independently advanced to `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064`, observed before the owner-authorized publication of `v2`.
 - Logical commits: `56f648f` audit/safety; `6c55952` UI/workflow architecture; `ce5e4bd` PWA lifecycle; `4c60eae` independent-review corrections; `4270880` final edge verification/polish. Later commits are documentation only.
-- No merge, push, deployment, release tag, Cloudflare change or APK.
+- Published the separate [GitHub `v2` branch](https://github.com/RyanEid06/SplitLeb/tree/v2) on 2026-10-17 at the owner's request. No merge, deployment, release tag, Cloudflare change or APK.
 
 ## Baseline
 
