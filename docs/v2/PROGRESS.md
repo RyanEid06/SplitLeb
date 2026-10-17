@@ -30,3 +30,13 @@
 - Latest build JS386.78kB/116.56gzip, CSS24.67kB/5.77gzip (substantial CSS reduction from74.22).
 - Production PWA QA uses original V1 build on same local origin, actual V1 UI-created records/group/archived member. That setup passes. First update prompt timed out while worker still installing; diagnosis in progress in scripts/qa-pwa.mjs (server request + cache entries on failure).
 - Added/fixed separate registration lifecycle regression: attach state listener to an already installing worker, since updatefound can precede register() resolution. Unit test red→green3/3.
+
+## Final checkpoint / WP-V2.9–10 — complete for owner review
+
+- Independent review2Important+1Minor resolved and rechecked; see REVIEW.md. Per-file precache integrity and all-form/late-activation protection now have executable regressions.
+- Locked install190 packages, typecheck/lint clean,123/123tests21files, production build successful. Final CSS25.00kB/5.81gzip, JS388.39/117.06gzip. No weakened/deleted tests.
+- All final browser suites pass on Chromium156: responsive7widths,14axechecks0violations, keyboard/decimal/custom/extras/group/error/large/legacy flows, actual V1→V2 exactdata, browserclose/reopenoffline, updates/multitab/failures/mixeddeployments. gzip-served shell verified too.
+- Visual inspection covered representative phone/desktop screens and empty/error/large-money states. Exact evidence and acceptance limits in VERIFICATION.md.
+- Real generated profiles revealed dev watcher EBUSY and exported V1 source affected tool discovery; ignore only generated output/.playwright-cli for Vite/ESLint and scope Vitest to actual src tests. Dev server subsequently stayed healthy during profile creation. Fresh install required stopping our local servers to release Windows native-binding locks; final install succeeded.
+- Root continuity, README, architecture, owner report, scorecard, baseline/final logs and reproduction scripts complete. Immutable verified implementation4270880; documentation afterward does not change built app.
+- Stop with v2 preserved. No push/merge/deploy/tag/production config change. Manual physical-device/SR/cross-browser/hosted acceptance remains explicitly unverified.

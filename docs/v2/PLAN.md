@@ -25,10 +25,10 @@
 ## Tasks
 
 - [x] 1. Safety/baseline: create branch, record untouched commands, inspect architecture, start application. Files: docs/v2/*.
-- [ ] 2. Foundation/shell/home: replace styles/base/buttons/layout/home; AppLayout, Icon/Avatar primitives, recent lists. Verify actual browser navigation and widths, semantic labels and focus.
-- [ ] 3. Bill workflows: create shared useBillEditor with guarded navigation and persistence/conflict handling; simplify NewBillPage/PeopleEditor; decompose ItemsPanel into entry/list/assignment; update Workspace, Review and payment layout. Add behavioral tests first for edit persistence and golden fixtures; run suite/typecheck.
-- [ ] 4. Groups/history: decompose Groups into management, members, activity, balances, stats; section navigation; simplify backup copy and history. Browser verify archives/restores/group creation, duplicate/delete, backup round trip/conflicts.
-- [ ] 5. PWA: build-specific worker identity, atomic shell caching, safe waiting-update notification, environment gating, matching manifest/icons; test lifecycle/offline relaunch in production preview.
-- [ ] 6. Final QA/docs: responsive matrix, accessibility audit, upgrade from V1 on same origin, v1 DB migration, portable fixtures, dead assets, bundle check, full checks and independent review. Record exact evidence, limitations, scorecard; commit on v2 and stop for owner review.
+- [x] 2. Foundation/shell/home: replace styles/base/buttons/layout/home; AppLayout, Icon/Avatar primitives, recent lists. Verify actual browser navigation and widths, semantic labels and focus.
+- [x] 3. Bill workflows: create shared useBillEditor with guarded navigation and persistence/conflict handling; simplify NewBillPage/PeopleEditor; decompose ItemsPanel into entry/list/assignment; update Workspace, Review and payment layout. Add behavioral tests first for edit persistence and golden fixtures; run suite/typecheck.
+- [x] 4. Groups/history: decompose Groups into management, members, activity, balances, stats; section navigation; simplify backup copy and history. Browser verify archives/restores/group creation, duplicate/delete, backup round trip/conflicts.
+- [x] 5. PWA: build-specific worker identity, atomic shell caching, safe waiting-update notification, environment gating, matching manifest/icons; test lifecycle/offline relaunch in production preview.
+- [x] 6. Final QA/docs: responsive matrix, accessibility audit, upgrade from V1 on same origin, v1 DB migration, portable fixtures, dead assets, bundle check, full checks and independent review. Record exact evidence, limitations, scorecard; commit on v2 and stop for owner review.
 
 For each task: add regression evidence before behavior changes, implement, run relevant checks, review and update PROGRESS.md in the same logical commit. Full final checks: `npm run typecheck`, `npm run lint`, `npm run test:run`, `npm run build`, browser QA script.
