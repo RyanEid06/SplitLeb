@@ -32,20 +32,26 @@ try {
     for (let y = 0; y < image.height; y++) {
       for (let x = 0; x < image.width; x++) {
         if (pixels[(y * image.width + x) * 4 + 3]) {
+          const distance = Math.hypot(x + 0.5 - image.width / 2, y + 0.5 - image.height / 2);
           radius = Math.max(
             radius,
-            Math.hypot(x + 0.5 - image.width / 2, y + 0.5 - image.height / 2),
+            distance,
           );
         }
       }
     }
-    function png(size, fraction, background) {
+    function png(size, fraction, backgroundShape) {
       const canvas = document.createElement("canvas");
       canvas.width = canvas.height = size;
       const context = canvas.getContext("2d");
-      if (background) {
-        context.fillStyle = "#101714";
-        context.fillRect(0, 0, size, size);
+      if (backgroundShape) {
+        context.fillStyle = "#A5E6B8";
+        context.beginPath();
+        if (backgroundShape === "round")
+          context.arc(size / 2, size / 2, size * 0.49, 0, Math.PI * 2);
+        else context.roundRect(size * 0.01, size * 0.01, size * 0.98, size * 0.98, size * 0.21);
+        context.fill();
+        context.clip();
       }
       context.imageSmoothingEnabled = true;
       context.imageSmoothingQuality = "high";
@@ -62,6 +68,9 @@ try {
       return canvas.toDataURL("image/png").split(",")[1];
     }
     const files = [];
+    // The approved emblem sits within the tile's central safe area. The tile
+    // fills the 72dp launcher viewport while the mint background fills its mask.
+    const adaptiveWidth = 72;
     for (const [density, scale] of [
       ["mdpi", 1],
       ["hdpi", 1.5],
@@ -69,16 +78,18 @@ try {
       ["xxhdpi", 3],
       ["xxxhdpi", 4],
     ]) {
-      for (const name of ["ic_launcher", "ic_launcher_round"]) {
-        files.push({
-          path: `mipmap-${density}/${name}.png`,
-          png: png(48 * scale, 0.43, true),
-        });
-      }
-      // All artwork inside Android's 66/108 dp adaptive safe circle.
+      files.push({
+        path: `mipmap-${density}/ic_launcher.png`,
+        png: png(48 * scale, radius / image.width, "rounded"),
+      });
+      files.push({
+        path: `mipmap-${density}/ic_launcher_round.png`,
+        png: png(48 * scale, radius / image.width, "round"),
+      });
+      // Emblem inside Android's 66/108 dp safe circle; mint fills to the mask.
       files.push({
         path: `mipmap-${density}/ic_launcher_foreground.png`,
-        png: png(108 * scale, 0.3, false),
+        png: png(108 * scale, radius / image.width * adaptiveWidth / 108, false),
       });
     }
     files.push({

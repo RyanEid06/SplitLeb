@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">#101714</item>
         <item name="colorPrimaryDark">#101714</item>
         <item name="colorAccent">#A5E6B8</item>
@@ -10,10 +10,9 @@
         <item name="android:statusBarColor">#101714</item>
         <item name="android:navigationBarColor">#101714</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:forceDarkAllowed">false</item>
     </style>
 
+    <style name="AppTheme" parent="AppTheme.Base" />
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -21,11 +20,11 @@
     </style>
 
 
-    <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+    <style name="AppTheme.LaunchBase" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#101714</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
     </style>
+    <style name="AppTheme.NoActionBarLaunch" parent="AppTheme.LaunchBase" />
 </resources>

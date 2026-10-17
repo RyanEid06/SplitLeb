@@ -19,6 +19,7 @@
     "android:sync": "npm run build && cap sync android",
     "android:open": "cap open android",
     "android:build": "npm run android:sync && node scripts/build-android.mjs",
+    "android:release": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-android-release.ps1",
     "android:icons": "node scripts/generate-android-icons.mjs",
     "qa:android-shell": "node scripts/qa-android-shell.mjs"
   },

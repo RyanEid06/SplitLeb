@@ -6,7 +6,10 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'output', '.playwright-cli']),
+  globalIgnores([
+    'dist', 'output', '.playwright-cli',
+    'android/**/build/**', 'android/app/src/main/assets/**',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

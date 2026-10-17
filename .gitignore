@@ -33,4 +33,7 @@ output/
 # Android signing material and machine-specific configuration
 *.jks
 *.keystore
+*.p12
+*.pfx
 keystore.properties
+signing.properties
