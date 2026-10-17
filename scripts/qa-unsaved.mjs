@@ -16,6 +16,10 @@ async function offerUpdate() {
 }
 try {
   await page.goto(base + "/bills/new");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
   await page.getByLabel("Name", { exact: true }).fill("Unadded person");
   await offerUpdate();
   assert.equal(
@@ -68,6 +72,20 @@ try {
   assert.equal(
     await page.getByLabel("Item", { exact: true }).inputValue(),
     "Typed during activation",
+  );
+  await page.getByLabel("Item", { exact: true }).fill("");
+  await offerUpdate();
+  await page.getByRole("button", { name: "Update", exact: true }).click();
+  await page.waitForTimeout(10100);
+  await page
+    .getByLabel("Item", { exact: true })
+    .fill("Typed after activation timeout");
+  await page.evaluate(() =>
+    navigator.serviceWorker.dispatchEvent(new Event("controllerchange")),
+  );
+  assert.equal(
+    await page.getByLabel("Item", { exact: true }).inputValue(),
+    "Typed after activation timeout",
   );
   console.log(
     "PASS unsaved setup/person/item drafts and edits during activation prevent reload",

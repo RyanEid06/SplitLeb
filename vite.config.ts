@@ -11,6 +11,7 @@ function filesIn(directory: string): string[] {
   );
 }
 export default defineConfig({
+  server: { watch: { ignored: ["**/output/**", "**/.playwright-cli/**"] } },
   test: { include: ["src/**/*.test.{ts,tsx}"] },
   plugins: [
     react(),

@@ -4,6 +4,13 @@
 .mobile-review-action {
   display: none;
 }
+.mobile-review-action .save-status {
+  flex-basis: auto;
+  flex: 1;
+}
+.mobile-review-action button {
+  white-space: nowrap;
+}
 @media (max-width: 760px) {
   .desktop-review-action {
     display: none;

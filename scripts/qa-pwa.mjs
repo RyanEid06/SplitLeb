@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve, extname, sep } from "node:path";
+import { gzipSync } from "node:zlib";
 
 // Local-only test server: swaps builds on one origin without touching hosting.
 let root = resolve("output/playwright/v1-dist");
@@ -44,12 +45,14 @@ const server = createServer(async (request, response) => {
         );
       body = Buffer.from(source);
     }
+    const compressed = [".js", ".css", ".html"].includes(extname(file));
     response
       .writeHead(200, {
         "content-type": types[extname(file)] || "application/octet-stream",
         "cache-control": "no-store",
+        ...(compressed ? { "content-encoding": "gzip" } : {}),
       })
-      .end(body);
+      .end(compressed ? gzipSync(body) : body);
   } catch {
     response.writeHead(404).end("Not found");
   }

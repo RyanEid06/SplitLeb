@@ -1,0 +1,6 @@
+PASS Actual V1 UI created saved bill, group and archived member
+PASS V1 to V2 on the same origin preserves every stored field and accepts waiting-worker update
+PASS After browser close/reopen offline: deep-link bill, create, review, saved group bill, history and export work
+PASS Update waits for saved edits, preserves note and retains caches for another open tab
+PASS Incomplete update rejects installation; previous offline shell and records remain usable
+PASS Content hashes reject mixed-deployment HTML and retain the working offline build

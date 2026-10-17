@@ -25,7 +25,9 @@ export function GroupBalances({
             <section className="group-currency" key={currency}>
               <h4>
                 {currency}{" "}
-                <small className="muted-text">· {rows.billCount} bills</small>
+                <small className="muted-text">
+                  · {rows.billCount} {rows.billCount === 1 ? "bill" : "bills"}
+                </small>
               </h4>
               {!rows.billCount ? (
                 <p className="empty-note">No {currency} bills yet.</p>

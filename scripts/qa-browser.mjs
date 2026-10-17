@@ -84,6 +84,13 @@ try {
     4,
   );
   await axe("home");
+  await page.locator("h1").click();
+  await page.screenshot({ path: "output/playwright/empty-home-390.png", fullPage: true });
+  const emptyHistory = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await emptyHistory.goto(base + "/history");
+  await emptyHistory.getByRole("heading", { name: "No bills yet." }).waitFor();
+  await emptyHistory.screenshot({ path: "output/playwright/empty-history-390.png", fullPage: true });
+  await emptyHistory.close();
   check("Home: one landmark, four accessible phone destinations, axe clean");
   await page
     .getByRole("link", { name: "New bill", exact: true })
@@ -94,6 +101,11 @@ try {
   await page.getByLabel("Name", { exact: true }).fill("Jad");
   await page.getByRole("button", { name: "Add person", exact: true }).click();
   await axe("new-bill");
+  await page.locator("h1").click();
+  await page.screenshot({
+    path: "output/playwright/new-bill-390.png",
+    fullPage: true,
+  });
   await page.getByRole("button", { name: "Start splitting" }).click();
   await page
     .getByRole("heading", { name: "Shared bill", exact: true })
@@ -114,6 +126,7 @@ try {
   await page.getByRole("button", { name: "Split Dinner", exact: true }).click();
   await page.getByRole("dialog").waitFor();
   await axe("assignment");
+  await page.screenshot({ path: "output/playwright/assignment-390.png" });
   await page.keyboard.press("Escape");
   assert.equal(await page.getByRole("dialog").count(), 0);
   assert.ok(
@@ -160,6 +173,11 @@ try {
   await page.getByRole("button", { name: "+ Discount", exact: true }).click();
   await page.getByLabel("Amount", { exact: true }).last().fill("1");
   await axe("workspace-extras");
+  await page.locator("h1").click();
+  await page.screenshot({
+    path: "output/playwright/workspace-extras-390.png",
+    fullPage: true,
+  });
   check(
     "Fractional shares, invalid custom totals and tip/discount entry work without weakening financial validation",
   );
@@ -193,8 +211,12 @@ try {
   await noOverflow("Expanded review");
   const reviewUrl = page.url();
   await page.getByRole("link", { name: "Groups", exact: true }).click();
+  await page.getByRole("heading", { name: "Keep your people together." }).waitFor();
+  await page.screenshot({ path: "output/playwright/empty-groups-390.png", fullPage: true });
   await page.getByLabel("New group", { exact: true }).fill("Dinner crew");
   await page.getByRole("button", { name: "Create group", exact: true }).click();
+  await page.getByLabel("Add member", { exact: true }).waitFor();
+  await page.screenshot({ path: "output/playwright/empty-members-390.png", fullPage: true });
   await page.getByLabel("Add member", { exact: true }).fill("Ryan");
   await page.getByRole("button", { name: "Add member", exact: true }).click();
   await page.getByText("Member added.", { exact: true }).waitFor();
@@ -267,9 +289,15 @@ try {
   await page.getByText(/Imported 0 bills and 0 groups/).waitFor();
   assert.equal((await readRecords()).bills.length, 2);
   await axe("history");
+  await page.locator("h1").click();
+  await page.screenshot({
+    path: "output/playwright/history-backup-390.png",
+    fullPage: true,
+  });
   check("Backup export and duplicate import round trip preserve bills/groups");
   for (const width of [320, 360, 390, 412, 768, 1280, 1600]) {
     await page.setViewportSize({ width, height: 900 });
+    let screenIndex = 0;
     for (const route of [
       "/",
       "/bills/new",
@@ -283,11 +311,27 @@ try {
       await page.locator("h1").waitFor();
       await page.waitForTimeout(100);
       await noOverflow(width + " " + route);
+      if (width === 390 || width === 1280)
+        await page.screenshot({
+          path:
+            "output/playwright/screen-" + width + "-" + screenIndex++ + ".png",
+          fullPage: true,
+        });
       if (route === "/groups") {
         for (const name of ["Members", "Balances", "Stats", "Activity"]) {
           await page.getByRole("button", { name, exact: true }).click();
           await noOverflow(width + " group " + name);
           if (width === 390) await axe("group-" + name.toLowerCase());
+          if (width === 390 || width === 1280)
+            await page.screenshot({
+              path:
+                "output/playwright/groups-" +
+                width +
+                "-" +
+                name.toLowerCase() +
+                ".png",
+              fullPage: true,
+            });
         }
       }
     }
@@ -338,6 +382,11 @@ try {
       await page.locator(".review-person-row").first().click();
       await noOverflow(width + " expanded " + fixture.name);
       if (width === 320) await axe("edge-" + fixture.name);
+      if (width === 320)
+        await page.screenshot({
+          path: "output/playwright/edge-" + fixture.name + ".png",
+          fullPage: true,
+        });
     }
   }
   check(
@@ -345,10 +394,12 @@ try {
   );
   await page.goto(base + "/bills/missing-bill/workspace");
   await page.getByRole("heading", { name: "Bill unavailable" }).waitFor();
+  await page.screenshot({ path: "output/playwright/missing-bill.png", fullPage: true });
   assert.ok(!(await page.locator("body").innerText()).includes("missing-bill"));
   await page.goto(base + "/not-a-real-route");
   await page.getByRole("heading", { name: "Page not found" }).waitFor();
   await axe("not-found");
+  await page.screenshot({ path: "output/playwright/not-found.png", fullPage: true });
   check(
     "Missing bill and unknown route have useful error states without internal IDs",
   );

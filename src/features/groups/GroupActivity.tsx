@@ -34,7 +34,8 @@ export function GroupActivity({ bills }: { bills: StoredBill[] }) {
                 <strong>{bill.title}</strong>
                 <small>
                   {bill.status} · {bill.people.length} people ·{" "}
-                  {bill.items.length} items ·{" "}
+                  {bill.items.length}{" "}
+                  {bill.items.length === 1 ? "item" : "items"} ·{" "}
                   {new Date(bill.updatedAt).toLocaleDateString()}
                 </small>
               </span>

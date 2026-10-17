@@ -89,7 +89,10 @@ export function HistoryPage() {
                 <div>
                   <strong className="history-bill-title">{bill.title}</strong>
                   <span className="history-bill-meta">
-                    {bill.peopleCount} people · {bill.itemsCount} items ·{" "}
+                    {bill.peopleCount}{" "}
+                    {bill.peopleCount === 1 ? "person" : "people"} ·{" "}
+                    {bill.itemsCount} {bill.itemsCount === 1 ? "item" : "items"}{" "}
+                    ·{" "}
                     {new Date(bill.updatedAt).toLocaleDateString(undefined, {
                       dateStyle: "medium",
                     })}

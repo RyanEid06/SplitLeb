@@ -1,0 +1,16 @@
+PASS Home: one landmark, four accessible phone destinations, axe clean
+PASS Dirty navigation is cancelled without losing the receipt; dialog Escape restores focus
+PASS Fractional shares, invalid custom totals and tip/discount entry work without weakening financial validation
+PASS Cent remainder and edited payment survive Mark settled and reload
+PASS Group member archive/restore, preselection, stable identity and k-LBP creation
+PASS Backup export and duplicate import round trip preserve bills/groups
+PASS Responsive workflows: 320px
+PASS Responsive workflows: 360px
+PASS Responsive workflows: 390px
+PASS Responsive workflows: 412px
+PASS Responsive workflows: 768px
+PASS Responsive workflows: 1280px
+PASS Responsive workflows: 1600px
+PASS Legacy import with 21 people, duplicate/long names, long bill titles, large LBP and a one-cent payer passes narrow-screen and axe checks
+PASS Missing bill and unknown route have useful error states without internal IDs
+PASS No browser runtime errors
