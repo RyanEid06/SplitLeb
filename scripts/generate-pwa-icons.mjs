@@ -5,13 +5,13 @@ const outputDir = "public/icons";
 mkdirSync(outputDir, { recursive: true });
 
 const colors = {
-  ink: [23, 32, 26, 255],
-  ink2: [31, 42, 34, 255],
-  green: [31, 61, 43, 255],
+  ink: [16, 23, 20, 255],
+  ink2: [16, 23, 20, 255],
+  green: [57, 90, 67, 255],
   cream: [255, 250, 241, 255],
   sand: [244, 241, 234, 255],
-  purple: [119, 53, 238, 255],
-  violet: [83, 36, 178, 255],
+  purple: [165, 230, 184, 255],
+  violet: [165, 230, 184, 255],
 };
 
 function mix(a, b, t) {
@@ -63,7 +63,7 @@ function encodePng(width, height, pixels) {
   return Buffer.concat([
     signature,
     chunk("IHDR", ihdr),
-    chunk("IDAT", deflateSync(raw, { level: 1 })),
+    chunk("IDAT", deflateSync(raw, { level: 9 })),
     chunk("IEND", Buffer.alloc(0)),
   ]);
 }

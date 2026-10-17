@@ -1,38 +1,38 @@
-const SERVICE_WORKER_URL = "/sw.js";
-const VITE_DEV_SERVER_PORT = "5173";
-const CACHE_CURRENT_APP_SHELL_MESSAGE = "SPLITLEB_CACHE_CURRENT_APP_SHELL";
-
-function shouldRegisterServiceWorker() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  if (!("serviceWorker" in navigator)) {
-    return false;
-  }
-
-  return window.location.port !== VITE_DEV_SERVER_PORT;
-}
-
-async function registerAndWarmOfflineCache() {
-  try {
-    await navigator.serviceWorker.register(SERVICE_WORKER_URL);
-    const registration = await navigator.serviceWorker.ready;
-
-    registration.active?.postMessage({
-      type: CACHE_CURRENT_APP_SHELL_MESSAGE,
-    });
-  } catch (error) {
-    console.warn("SplitLeb offline cache registration failed.", error);
-  }
-}
-
 export function registerServiceWorker() {
-  if (!shouldRegisterServiceWorker()) {
+  if (
+    !import.meta.env.PROD ||
+    typeof window === "undefined" ||
+    !("serviceWorker" in navigator)
+  )
     return;
+  async function register() {
+    try {
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        updateViaCache: "none",
+      });
+      const announce = () => {
+        if (registration.waiting)
+          window.dispatchEvent(
+            new CustomEvent("splitleb:update", { detail: registration }),
+          );
+      };
+      announce();
+      const watchInstalling = () => {
+        registration.installing?.addEventListener("statechange", announce);
+      };
+      watchInstalling();
+      registration.addEventListener("updatefound", watchInstalling);
+      const check = () => {
+        void registration.update().catch(() => {});
+      };
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") check();
+      });
+      window.addEventListener("online", check);
+    } catch {
+      window.dispatchEvent(new CustomEvent("splitleb:offline-unavailable"));
+    }
   }
-
-  window.addEventListener("load", () => {
-    void registerAndWarmOfflineCache();
-  });
+  if (document.readyState === "complete") void register();
+  else window.addEventListener("load", () => void register(), { once: true });
 }

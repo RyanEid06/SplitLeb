@@ -144,9 +144,10 @@ export function BillWorkspacePage() {
         </details>
         <details className="workspace-disclosure">
           <summary>Note & bill options</summary>
-          <label>
-            Bill note
+          <div className="field">
+            <label htmlFor="bill-note">Bill note</label>
             <textarea
+              id="bill-note"
               value={bill.note ?? ""}
               rows={2}
               placeholder="Add a reminder"
@@ -154,7 +155,7 @@ export function BillWorkspacePage() {
                 change({ note: event.target.value || undefined })
               }
             />
-          </label>
+          </div>
           <div className="button-row">
             <button
               type="button"

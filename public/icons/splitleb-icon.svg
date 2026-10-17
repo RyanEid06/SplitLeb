@@ -1,8 +1,8 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SplitLeb icon">
-  <rect width="512" height="512" rx="112" fill="#17201a"/>
-  <path d="M100 292L256 206L412 292L256 384Z" fill="#7735ee"/>
+  <rect width="512" height="512" rx="112" fill="#101714"/>
+  <path d="M100 292L256 206L412 292L256 384Z" fill="#a5e6b8"/>
   <path d="M112 220L256 140L400 220L256 304Z" fill="#fffaf1"/>
-  <path d="M112 220L256 140L400 220L256 304Z" fill="none" stroke="#1f3d2b" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M112 220L256 140L400 220L256 304Z" fill="none" stroke="#395a43" stroke-width="10" stroke-linejoin="round"/>
   <path d="M160 342H250V378H178V416H252" fill="none" stroke="#fffaf1" stroke-width="28" stroke-linejoin="miter"/>
   <path d="M300 340V416H372" fill="none" stroke="#fffaf1" stroke-width="28" stroke-linejoin="miter"/>
 </svg>
