@@ -1,5 +1,7 @@
 # SplitLeb V2 architecture
 
+> Historical web/PWA V2 record. Current Android architecture and release details: [Android guide](../ANDROID.md). See the [V2 archive index](README.md) for context.
+
 ## Boundaries
 
 React and React Router remain the presentation layer. `src/domain/bill` and `src/domain/groups` own calculations. UI components call these functions and never compute currency conversions or settlement arithmetic independently. `src/storage` owns IndexedDB and backup contracts. No server, identity provider, remote database or analytics is involved.

@@ -1,5 +1,7 @@
 # SplitLeb V2 — owner review report
 
+> Historical web/PWA V2 report. Statements about no APK/tag apply to that milestone. Current Android release and verification: [Android guide](../ANDROID.md). See the [archive index](README.md).
+
 The complete Web/PWA V2 pass is implemented on `v2`, with final local verification recorded in [VERIFICATION.md](VERIFICATION.md). It is ready for owner review. **Do not merge or deploy it over production without the owner's decision.**
 
 ## Branch

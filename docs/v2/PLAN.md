@@ -1,5 +1,7 @@
 # SplitLeb V2 Implementation Plan
 
+> Historical completed V2 plan, not a current task list. Current Android status: [Android guide](../ANDROID.md). Other V2 records: [archive index](README.md).
+
 > Execute inline using superpowers:executing-plans, preserving the owner's complete implementation authorization. Use focused browser evidence for presentation changes and test-first regression coverage for changed behavior.
 
 **Goal:** Complete the owner-authorized Web/PWA upgrade on `v2`.

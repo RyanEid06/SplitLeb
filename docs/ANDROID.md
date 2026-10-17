@@ -1,197 +1,234 @@
-# SplitLeb Android test milestone
+# SplitLeb Android 1.0.0
 
-## Scope and architecture
+## Release and source
 
-Owner-authorized implementation on `android-app`, based on remote `v2`
-`d465ff0a4cf9dec19b10e7bf33a83cbb75be9622` (verified 2026-10-17).
-Do not merge, deploy, tag, rename/delete branches or change `main`/`v2`.
-The existing React/TypeScript application is authoritative. Capacitor packages
-Vite's `dist` locally; there is no hosted startup URL or second implementation.
-Keep financial code, database `splitleb-local-db` version 2, backup schema and
-existing web/PWA behavior. Android uses APK updates rather than a service worker.
+Download [SplitLeb Android 1.0.0](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.0).
+The release contains the signed APK and its SHA-256 checksum.
 
-No existing permanent Android ID was found. Use permanent ID `com.splitleb.app`
-and label `SplitLeb`. Translate canonical web version `2.0.0-preview.1` to Android
-versionName `2.0.0-preview.1`, initial versionCode `1`. This is a debug/test
-milestone, not a production release. No permanent signing key is authorized.
+- Source branch: [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app),
+  created from latest remote `v2`, `d465ff0a4cf9dec19b10e7bf33a83cbb75be9622`.
+- Packaged source: `824ca93770f4cf6d6ca485f62772757d404217e2`. Subsequent release
+  documentation changes do not alter packaged inputs.
+- Release tag: `android-v1.0.0`, on `android-app`.
+- Permanent package ID: **`com.splitleb.app`**; app label: **SplitLeb**.
+- Android versionName **1.0.0**, versionCode **2**. The web package retains its
+  separate `2.0.0-preview.1` version.
 
-## Implementation plan and evidence ledger
+The owner reported the original test APK working on their phone on 2026-10-17,
+accepted the application, and requested a full mint launcher icon and the first
+permanently signed public release. They selected **GitHub Release: Android
+1.0.0**, superseding the earlier debug-only signing/publication limit.
 
-- [x] Audit current V2 docs, clean status, source commit and environment.
-- [x] Verify baseline: TypeScript/lint/build pass; 123 tests in 21 files pass.
-  Restricted sandbox blocks Vitest temp renames; rerun outside it passed.
-- [x] Create `android-app` from latest verified `v2`; retain other branch refs.
-- [x] Generate Capacitor Android with current stable compatible packages.
-- [x] Isolate native worker/update behavior; preserve connectivity feedback.
-- [x] Verify router/Back/dirty forms; add only necessary native handling.
-- [x] Supply reliable Android backup export without broad storage permissions;
-  retain standard file-input import and unchanged browser export.
-- [x] Derive launcher/adaptive/splash resources from approved repository artwork;
-  configure dark startup, insets, keyboard resize and minimal permissions.
-- [ ] Run web checks and browser/PWA regressions; sync/build/lint Android; inspect
-  APK contents/signature/manifest and test locally on emulator if available.
-- [ ] Record exact evidence, copy verified APK to Desktop, commit and push.
+No merge, branch deletion, Cloudflare deployment or `main`/`v2` change is part of
+this release. Local `main` remains `0a1334ed44cde1ef1cb48550fef18a71356f41e1`;
+remote `main` was already `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064`.
 
-Review focus: cold offline startup, persistence after force-stop/update,
-unsaved Back navigation/dialog dismissal, backup cancellation and keyboard/insets.
-Physical-phone acceptance remains a separate owner checklist.
+## Architecture
 
-## Current environment
+The existing React/TypeScript application remains authoritative. Capacitor
+packages Vite's `dist` locally. There is no hosted startup URL or second
+implementation. Financial calculations, domain/storage code, IndexedDB
+`splitleb-local-db` version 2, backup schemas and public artwork are unchanged
+from the V2 source.
 
-Node 24.18.0, npm 11.16.0, JDK 21. Capacitor core/CLI/Android **8.5.3**,
-App **8.1.2**, Filesystem **8.1.5**, Share **8.0.3**, all exact-locked. Registry
-stable versions and official Capacitor 8 documentation were checked before use.
-Android SDK 36 / Build Tools 35.0.0, Gradle 8.14.3, Android Gradle Plugin 8.13.0;
-minimum Android API 24. Use a current Android System WebView. Android Studio
-2025.2.1 or newer is the Capacitor 8 prerequisite.
+- Native assets load at permanent `https://localhost`, with `webDir: dist`.
+  No `server.url`, remote update loader or unrestricted `allowNavigation`.
+- Android skips PWA worker registration and browser update prompts. The APK is
+  its update unit. Browser caching, integrity checks and dirty-update protection
+  remain active. Both platforms retain connectivity feedback.
+- No startup/update data clearing. Browser/PWA and Android have separate
+  sandboxes; transfer records with backup export/import.
+- Back cancels the top dialog first, otherwise uses React Router history with
+  existing unsaved-change protection. Cold non-root navigation returns Home;
+  Home Back backgrounds the activity.
+- Browser exports retain Blob downloads. Android writes JSON to private
+  `cache/backups/` and opens the system chooser with a scoped URI. Choose a
+  durable destination: a closed chooser does not prove the file was saved.
+  Cancellation/ambiguous results do not claim success. Import uses the system
+  file picker; no broad or legacy storage permission.
+- No external web links were found in product screens. Capacitor's default
+  external-navigation handling and the existing web clipboard API are retained.
+
+## Build and development
+
+Verified with Node 24.18.0, npm 11.16.0, JDK 21, SDK platform 36 / Build Tools
+35.0.0, Gradle 8.14.3 and Android Gradle Plugin 8.13.0. Minimum API 24; target
+API 36. Capacitor core/CLI/Android **8.5.3**, App **8.1.2**, Filesystem **8.1.5**,
+Share **8.0.3** are exact-locked. Capacitor 8 requires Node 22+ and Android
+Studio 2025.2.1+. Use a current Android System WebView.
+
+Set `ANDROID_HOME` or create ignored `android/local.properties` for your SDK.
+Java properties files need escaped Windows drive colons, for example
+`sdk.dir=C\:/Android/Sdk`. Never commit local paths or signing material.
+
+```sh
+npm ci
+npm run android:sync    # production build, then cap sync android
+npm run android:open    # Android Studio
+npm run android:build   # fresh build + sync + assembleDebug
+npm run android:release # Windows: fresh build + sync + signed release + lint
+```
+
+Android Studio opens the `android` directory with its normal debug Run/Build
+workflow. After web source changes, sync before building. Normal `npm run build`
+still produces web/PWA deployment files; hosting configuration is unchanged.
+
+On this machine only, verified Google SDK tools are in ignored
+`output/android-sdk`. Java's default Windows temporary directory failed a
+standalone Unix-domain socket probe. The session workaround sets two
+process-local Java properties; these are not shipped app settings:
+
+```powershell
+New-Item -ItemType Directory -Force output/tmp | Out-Null
+$javaTemp = (Resolve-Path output/tmp).Path
+$env:JAVA_TOOL_OPTIONS = "-Djava.io.tmpdir=$javaTemp -Djdk.net.unixdomain.tmpdir=$javaTemp"
+npm run android:release
+```
+
+## Permanent signing and debug-to-release migration
+
+The permanent RSA-4096 key is outside the repository in
+`C:\Users\Administrator\SplitLeb-Signing`, restricted to the current owner and
+SYSTEM. Preserve this directory. It contains `splitleb-release.p12`, encrypted
+`credentials.clixml`, public `release-certificate.pem`, and recovery notes.
+No private key/password is committed or attached to the release.
+
+`scripts/build-android-release.ps1` defaults to that user-profile directory;
+override with `SPLITLEB_SIGNING_DIRECTORY`. It decrypts the credential through
+Windows DPAPI, supplies signing inputs in its child process environment, and
+restores previous values in `finally`. The credential file works only for the
+current Windows user on this machine. An independently recoverable off-machine
+backup has **not** been verified. Before Windows migration/reinstallation,
+securely back up the keystore and recover its password locally into the owner's
+password manager. Never generate a replacement key for an update.
+
+On another machine or CI, securely supply the existing key and process variables
+`SPLITLEB_KEYSTORE`, `SPLITLEB_KEY_ALIAS`, `SPLITLEB_STORE_PASSWORD` and
+`SPLITLEB_KEY_PASSWORD`. After `npm run android:sync`, run from `android`:
+`./gradlew :app:assembleRelease :app:lintRelease` (Windows: `.\gradlew.bat`).
+Release APK/AAB packaging fails without signing inputs; the negative check passed.
+
+Public signing certificate SHA-256:
+`36e30976995c65997a6b836c7308cd2b241474d5aef81518f86c7ba9140440b2`.
+Future releases must keep this key, application ID and origin, with a higher
+versionCode. See [Android app signing](https://developer.android.com/studio/publish/app-signing).
+
+**Earlier debug installation:** export a JSON backup to a durable destination
+and confirm it exists **before uninstalling**. Android rejects an in-place
+update signed with a different key. Uninstall the debug app, install this signed
+release, then import the backup. Uninstalling deletes that installation's local
+records. Future same-key signed releases can update it in place.
+
+## Native configuration and branding
+
+- Normal permissions: `INTERNET`, `ACCESS_NETWORK_STATE`. Chromium requires
+  network state for WebView connectivity events. AndroidX declares/uses
+  signature-only `com.splitleb.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`.
+  No sensitive runtime permissions, tracking, analytics, Firebase, accounts or
+  remote database.
+- MainActivity is exported for launching. AndroidX's exported profile-install
+  receiver requires privileged `android.permission.DUMP`. FileProvider and
+  AndroidX startup provider are non-exported. FileProvider grants temporary
+  access only to `cache/backups/`. Auto Backup and cleartext traffic are disabled.
+  Release debugging is disabled; production WebView debugging is not forced.
+- Dark `#101714` startup/window background, approved logo splash, light system
+  icons, no orientation lock, `adjustResize` keyboard behavior, and Capacitor 8
+  SystemBars native inset handling. API 27/29 theme properties are qualified.
+- Launcher background is mint **`#A5E6B8`** across the adaptive mask, with the
+  approved emblem centered. Legacy icons have proper rounded/circular masks
+  and mint backing at five densities. Adaptive artwork uses a 72dp viewport in
+  the 108dp layer. `npm run android:icons` regenerates resources from unchanged
+  `public/splitleb-logo.png` with Playwright. Web artwork is unchanged.
 
 References: [Capacitor 8 prerequisites](https://capacitorjs.com/docs/updating/8-0),
 [configuration](https://capacitorjs.com/docs/config),
 [App Back API](https://capacitorjs.com/docs/apis/app),
-[Chromium connectivity notifier requirement](https://github.com/chromium/chromium/blob/main/net/android/java/src/org/chromium/net/NetworkChangeNotifierAutoDetect.java).
+[Chromium connectivity notifier](https://github.com/chromium/chromium/blob/main/net/android/java/src/org/chromium/net/NetworkChangeNotifierAutoDetect.java).
 
-The previously recorded SDK path is absent on this machine. Official command
-tools are being installed into ignored `output/android-sdk`; `local.properties`
-is ignored. No machine-wide environment setting is changed.
+## Verification
 
-Java's default Windows temporary directory caused `Selector.open()` and Gradle
-to fail with Unix-domain `Invalid argument: connect`. A standalone probe fails
-there and passes with both `java.io.tmpdir` and `jdk.net.unixdomain.tmpdir` set
-to ignored `output/tmp`. Builds in this session use those process-local Java
-properties. This is an environment workaround, not a shipped app setting.
+Baseline at `d465ff0`: typecheck/lint/build passed, **123 tests / 21 files**.
+Final release source: typecheck and ESLint pass (**0 errors, 0 warnings**),
+**134 tests / 23 files** pass; production Vite build and Capacitor sync pass.
+Unit tests cover native worker isolation, Back routing/dialog cancellation,
+backup/cancel/error/ambiguous-share paths, and unchanged browser downloads.
 
-## Build workflow
+- Chromium 156 workflows passed all **7 widths** (320, 360, 390, 412, 768, 1280,
+  1600), with **14 axe checks / 0 violations**. Financial edge cases, backup
+  roundtrip and dirty navigation passed. `qa:unsaved` passed.
+- `qa:prepare-v1` and all **6 `qa:pwa` scenarios** passed: actual legacy-data
+  upgrade, browser close/reopen offline, dirty updates, multiple tabs and
+  incomplete/mixed-asset rejection.
+- Final `qa:android-shell`: **5 checks passed** against packaged assets: offline
+  native cold load without worker/cache/update UI, real router unsaved cancel,
+  dialog Back cancel, IndexedDB across full browser restart offline, and Home
+  minimization. Chromium uses a mocked Android bridge; this is not WebView or
+  device execution.
+- `assembleDebug`: **BUILD SUCCESSFUL**, 184 tasks executed. Follow-up
+  `assembleDebug lintDebug assembleDebugAndroidTest`: **BUILD SUCCESSFUL**,
+  271 tasks, lint **0 errors / 9 warnings**. Instrumentation compiled but was
+  not executed without an attached device/emulator.
+- `npm run android:release`: **BUILD SUCCESSFUL in 3m 40s**, 245 tasks
+  (235 executed, 10 up-to-date). Includes fresh build/sync, signed
+  `:app:assembleRelease` and `:app:lintRelease`.
+- Release Android lint: **0 errors / 8 warnings**: Gradle update advisory,
+  Android 12 extraction-rules suggestion, four generated unused resources, and
+  two optional monochrome/themed-icon tags. No baseline or suppression added.
+- Missing-key release packaging fails as required. `apksigner` verifies v2
+  signing against the permanent public certificate. `zipalign -c -P 16 -v 4`
+  passes. Binary manifest confirms package/version/API levels, non-debug release,
+  permissions/provider scope and disabled backup/cleartext.
+- All **16 `dist` files** SHA-256 match APK `assets/public/`. Packaged Capacitor
+  config confirms local origin and no remote URL/navigation override.
 
-Install Node 22+ (verified Node 24), JDK 21, SDK platform 36 and Build Tools
-35.0.0. Set `ANDROID_HOME` or create ignored `android/local.properties` with
-`sdk.dir` pointing to your own SDK. Do not commit absolute paths.
+Native lint errors were corrected with API-qualified themes and escaped local
+SDK properties. Generated build/asset copies are excluded from ESLint without
+weakening app rules. Integration review findings were fixed (network-state
+permission and real package/label instrumentation assertion). Final GPT-6.1
+Sol/high release review found no Critical/Important code issues; outdated
+debug-only documentation was corrected.
 
-```sh
-npm ci
-npm run android:sync   # production Vite build, then cap sync android
-npm run android:open   # open generated project in Android Studio
-npm run android:build  # rebuild + sync + Gradle assembleDebug
-```
+Logs/inspection: ignored `output/android-qa/`; browser reports:
+`output/playwright/`. These are local checks, not GitHub Actions/emulator proof;
+no CI workflow was added. The owner reported overall phone acceptance of the
+**earlier debug APK**. The agent did not operate the phone or individually
+certify the checklist below.
 
-Or, after syncing, run `android/gradlew assembleDebug` (Windows:
-`cd android` then `.\gradlew.bat assembleDebug`). Android Studio can open the
-`android` directory and use its normal debug Run/Build workflow. After any web
-source change, sync again before a native build. Normal `npm run build` and
-Cloudflare output remain available. No hosting configuration is changed.
+## Signed APK
 
-`npm run android:icons` regenerates launcher densities and splash from the
-approved `public/splitleb-logo.png` using the existing Playwright dependency;
-install its browser or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. The master and web
-branding assets remain unchanged. Adaptive art fits inside Android's 66/108 dp
-safe circle. Generated Android project/resources are tracked; copied web
-assets, SDK paths, caches, build outputs and signing material are ignored.
+- Filename: `SplitLeb-Android-1.0.0.apk`.
+- Canonical output: `android/app/build/outputs/apk/release/app-release.apk`.
+- Desktop: `C:\Users\Administrator\Desktop\SplitLeb-Android-1.0.0.apk` (hash verified).
+- Size: **5,858,456 bytes** (5.59 MiB).
+- SHA-256: `e3f852be1741af41d6430ffef87d77bc07f163a07682bdd3ddee5bcf89463861`.
+- Signer: `CN=SplitLeb, O=SplitLeb, C=LB`, RSA-4096; certificate fingerprint above.
+- Release assets: APK plus `SplitLeb-Android-1.0.0.apk.sha256`.
 
-## Platform behavior
+Historical phone-test artifact, retained separately on Desktop:
+`SplitLeb-Android-Test.apk`, **6,852,925 bytes**, source `112f954`, versionName
+`2.0.0-preview.1` / code 1, debug-signed. SHA-256:
+`d889faae4132595fabde40d8d728c321827569d9edf58dfa70b4fa033e736a07`.
+It is not the public release asset. The canonical debug output may be replaced
+by later builds; the historical Desktop copy was preserved.
 
-- Local assets load at permanent `https://localhost`; no `server.url`, remote
-  startup, remote update loader or unrestricted `allowNavigation` is configured.
-- Android never registers the PWA worker or subscribes to its update prompts.
-  The APK is its update unit. Browser worker caching, integrity checks and dirty
-  update protection are unchanged. The online/offline banner stays active in
-  both environments using browser connectivity events; actual phone transitions
-  still require QA.
-- IndexedDB name/version/stores and all financial/domain/storage code are
-  unchanged. No startup/update data clearing. Installing over the app with the
-  same ID, origin and signing identity preserves its data. Browser/PWA data is
-  a different sandbox: transfer it using backup export/import. Uninstalling or
-  clearing Android app data removes records.
-- Android Back dispatches cancel to the top open dialog first; otherwise it
-  uses React Router history (and its existing unsaved-change confirmation).
-  A cold deep link returns to Home; Back on Home backgrounds the activity.
-- Browser backup downloads are unchanged. Android writes JSON only to private
-  cache `backups/` and opens the standard share chooser with a scoped content
-  URI. Choose a destination to save a durable copy. Cancellation is explicit;
-  chooser success does not independently prove another app saved the file.
-  Cache copies are temporary. Standard file-input import uses Capacitor's
-  system picker. No legacy/external storage permission is needed.
-- No external web links were found in product screens; Capacitor's default
-  external navigation handling remains. Clipboard uses the existing web API.
-- Permissions: `INTERNET` and `ACCESS_NETWORK_STATE` (normal install-time
-  permission needed by Chromium WebView's connectivity notifier; no runtime
-  prompt). No analytics, Firebase, tracking,
-  authentication, remote database or sensitive runtime permissions. Auto Backup
-  is disabled, consistent with local-only data and explicit JSON backups.
-- Only the launcher activity is exported. FileProvider is non-exported and
-  exposes only `cache/backups/` with temporary URI grants. Cleartext traffic and
-  mixed content are disabled. No forced production WebView debugging.
-- Dark `#101714` startup/window background, approved logo splash, light system
-  icons, no orientation lock, and `adjustResize` keyboard behavior. Capacitor 8
-  SystemBars native inset handling honors the existing non-cover viewport;
-  there is no new edge-to-edge layout. No extra status/splash plugin required.
+## Physical-device follow-up
 
-## Verification so far
+**PHYSICAL DEVICE QA REQUIRED** for the final signed/icon-changed artifact.
+Owner overall acceptance is recorded above; individual items remain unreported:
 
-Baseline at `d465ff0`: typecheck/lint/build pass, **123 tests / 21 files** pass.
-After integration: typecheck/lint/build/sync pass, **134 tests / 23 files** pass.
-New tests cover native worker isolation, Back routing/dialog cancellation,
-native backup/cancel/error paths and unchanged browser downloads. Native plugin
-calls are mocked only at the bridge boundary; these are not device proof.
+- [ ] Install/launch signed release after safe backup migration; label, full
+  mint launcher/recent-app icon and splash without white/placeholder flashes.
+- [ ] Home/navigation; new group and USD/LBP bill; save, History, reopen/edit.
+- [ ] Force-close/reopen retains records; later same-key update retains data.
+- [ ] Airplane-mode cold launch, open records, create/save offline, force-close
+  and reopen still offline; reconnect and check banner transitions.
+- [ ] Back dismisses dialogs, respects canceled unsaved navigation, backgrounds
+  Home; check gesture and three-button navigation.
+- [ ] Keyboard/numeric inputs, long forms, dialogs, scrolling and keyboard Back
+  keep fields and controls reachable.
+- [ ] Export to durable storage, inspect/reimport JSON, cancel without data loss;
+  system picker, duplicate/conflict handling and PWA-to-Android backup transfer.
+- [ ] Status/navigation bars, cutouts/gesture area, rotation/landscape, no crashes.
 
-A final plugin-source check showed Android can also resolve the share chooser
-with an empty destination (not only reject cancellation). A regression failed
-with the old success result, then passed after treating this as "share sheet
-closed" and asking the user to confirm they saved a copy. The UI no longer
-claims successful sharing for that ambiguous result.
-
-Fresh Chromium 156 workflow checks passed at all 7 existing widths, including
-financial edge cases, backup roundtrip, dirty navigation and accessibility.
-`qa:unsaved` passed. `qa:prepare-v1` and all six `qa:pwa` scenarios passed,
-including real legacy-data upgrade, browser close/reopen offline, update while
-dirty, incomplete/mixed asset rejection and multi-tab retention.
-Full command logs are in ignored `output/android-qa/` and browser artifacts in
-`output/playwright/`. No emulator or physical device was attached at audit.
-
-`npm run qa:android-shell` additionally passed five Chromium integration checks:
-native platform detection and offline cold load from intercepted packaged files,
-no worker/cache/update UI, actual router dirty-confirmation cancel, actual dialog
-Back cancellation, IndexedDB persistence over full browser close/reopen at
-`https://localhost`, and Home Back minimization. The Android bridge is mocked;
-this does not prove Android WebView execution or physical behavior.
-
-Independent review of `d465ff0..ef296b9` found no Critical issues. Its Important
-finding was the WebView connectivity permission; added `ACCESS_NETWORK_STATE`
-after confirming Chromium's notifier source requirement. Its Minor finding was
-Capacitor's generated instrumentation test's placeholder package assertion;
-replaced it with an optional real package/label smoke test and removed the
-generated trivial arithmetic test. Instrumentation remains unrun without a
-device. No findings were deferred. Physical behavior and APK inspection were
-explicitly outside the evidence available to the reviewer at that time.
-
-The initial SDK manager installation stalled at a zero-byte Build Tools
-download. Official platform/Build Tools archives are being downloaded directly
-and validated against Google's repository manifest; the tooling remains local
-and ignored. APK results will be added after verification.
-
-## Physical-device acceptance
-
-**PHYSICAL DEVICE QA REQUIRED** — none of these are marked passed:
-
-- [ ] APK installs and launches; app label, launcher logo and recent-app icon
-  match SplitLeb; splash is correct without white/placeholder flashes.
-- [ ] Home renders; all navigation works; create a group and USD/LBP bills;
-  save, review, reopen/edit and inspect History.
-- [ ] Force-close/reopen retains bills and groups. Installing a newer APK over
-  this one with the same signing key retains them too.
-- [ ] Airplane-mode cold launch; open old records; create/save a bill offline;
-  force-close and reopen while still offline; records remain available.
-- [ ] Reconnect: offline banner transitions correctly; local functionality is
-  available in both connectivity states.
-- [ ] Android Back closes dialogs first; unsaved navigation can be canceled;
-  Home Back backgrounds normally. Check gesture and three-button navigation.
-- [ ] Keyboard/numeric entry, long forms, dialogs and scrolling keep focused
-  fields and important controls reachable; first Back dismisses keyboard.
-- [ ] Export a JSON backup to a durable destination using the Android chooser;
-  inspect/reimport it. Canceling the chooser keeps all saved data unchanged.
-- [ ] Import via system picker, duplicates/conflicts and imported data work.
-  Transfer an existing browser/PWA backup into Android.
-- [ ] Status/navigation bars, cutouts and gesture area do not obscure controls;
-  landscape/rotation remains usable; no crashes during these workflows.
-
-Debug signing is for tests only. Keep this test installation's debug key if
-testing in-place updates. A later permanent release key must be owner-approved;
-switching from debug signing will require a backup/import migration.
+Remaining owner actions: confirm the final icon/signed build on the phone and
+keep a securely recoverable backup of the permanent signing identity.

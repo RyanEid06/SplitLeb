@@ -1,5 +1,7 @@
 # V2 progress ledger
 
+> Historical V2 checkpoints. Earlier pending/debugging notes are not current outstanding work. Read the [current Android guide](../ANDROID.md) or [V2 archive index](README.md).
+
 ## Safety / WP-V2.1
 
 - Created `v2` from clean production `0a1334e`; verified `main` reference unchanged.

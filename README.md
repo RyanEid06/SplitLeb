@@ -1,88 +1,117 @@
+<p align="center">
+  <img src="public/splitleb-logo.png" width="112" alt="SplitLeb logo">
+</p>
+
 # SplitLeb
 
-A private, offline-first bill splitter for USD and Lebanese pounds. No account or server is needed.
+Split bills, track shared expenses and settle balances in USD or Lebanese pounds.
+SplitLeb works offline and keeps bills and groups on your device. No account or
+server is needed.
 
-## Android test branch
+**[Download Android 1.0.0](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.0)**
+— permanently signed APK with a full mint launcher icon. Download
+`SplitLeb-Android-1.0.0.apk` from the release assets; the checksum is included.
 
-`android-app` adds a Capacitor Android host to the completed V2 web application.
-The same React app and IndexedDB database run from assets packaged in the APK.
-See [Android build, architecture and QA](docs/ANDROID.md) for prerequisites,
-commands, test evidence and device checks. This is a debug test milestone;
-permanent release signing follows physical-device QA.
+## What you can do
 
-```sh
-npm run android:sync
-npm run android:open
-npm run android:build
-```
+- Split items equally, by shares or with custom amounts.
+- Track discounts, extras, payments and settlement transfers.
+- Reuse groups, review history and statistics, duplicate bills and share summaries.
+- Export and import JSON backups, including older supported backup formats.
+- Create, edit and reopen saved bills offline.
 
-## V2 review branch
+Changes use an explicit Save action, with protection against accidental
+navigation. USD and LBP stay separate; there is no exchange-rate conversion.
+LBP entry uses thousands: `630` means LBP 630,000. Settlement transfers retain
+LBP 1,000 rounding. Menu prices are treated as tax-included.
 
-All V2 work is on the published [GitHub `v2` review branch](https://github.com/RyanEid06/SplitLeb/tree/v2). Production `main` remains under the owner's control. This branch has not been merged or deployed over production.
+## Android installation and backups
 
-Start with [V2-CONTINUITY.md](V2-CONTINUITY.md) when resuming work. The complete [owner brief](docs/v2/OWNER-BRIEF.md), [baseline audit](docs/v2/AUDIT.md), [architecture](docs/v2/ARCHITECTURE.md), [verification](docs/v2/VERIFICATION.md) and [review report](docs/v2/FINAL-REPORT.md) are kept in the repository.
+The Android app packages the same React application locally through Capacitor.
+It can cold-launch without a connection; it does not load the hosted website.
+Updates are delivered as signed APKs. Android backup export opens the system
+share chooser: choose a durable destination and confirm the JSON file was saved.
 
-## Run locally
+**Upgrading from the earlier debug APK:** export and verify a JSON backup before
+uninstalling it. Install the signed release, then import the backup. The debug
+and permanent signing keys differ, so Android cannot update one over the other.
+Uninstalling removes local app records.
 
-Verified with Node.js 24.18.0 and npm 11.16.0.
+The web/PWA and Android app keep separate local data. Use backups to move
+between them or devices. Clearing app/browser data can remove records; offline
+storage is not a backup.
+
+## Source and documentation
+
+| Branch | Purpose |
+| --- | --- |
+| [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app) | Android release source, resources and build scripts based on V2 |
+| [`v2`](https://github.com/RyanEid06/SplitLeb/tree/v2) | Completed web/PWA V2 |
+| [`main`](https://github.com/RyanEid06/SplitLeb/tree/main) | Existing production web source |
+
+The Android release does not merge or deploy changes over the web branches.
+
+- [Android architecture, builds, signing and verification](docs/ANDROID.md)
+- [Historical V2 architecture and verification](docs/v2/README.md)
+- [Maintainer continuity](V2-CONTINUITY.md)
+
+## Development
+
+Verified with Node.js 24.18.0 and npm 11.16.0. Android also needs JDK 21 and the
+SDK versions documented in the Android guide.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite. Development never registers the production service worker, including on custom ports.
+For a production web build and preview:
+
+```sh
+npm run build
+npm run preview -- --host 127.0.0.1 --port 4173
+```
+
+Development does not register the production service worker. The web/PWA caches
+its shell after the first successful online visit; updates wait for unsaved
+changes and reject incomplete or mixed assets. Production hosting must serve
+`index.html` for app routes and real files for assets, icons, manifest and worker.
+Existing Cloudflare configuration is unchanged.
+
+```sh
+npm run android:sync    # build web assets and sync Android
+npm run android:open    # Android Studio
+npm run android:build   # debug APK
+npm run android:release # Windows; requires the existing private signing key
+```
+
+## Checks
 
 ```sh
 npm run typecheck
 npm run lint
 npm run test:run
-npm run build
-npm run preview -- --host 127.0.0.1 --port 4173
-```
-
-Use the production preview for offline/PWA verification. HTTPS or a trusted localhost origin is required for service workers. Production hosting must serve `index.html` for application routes and real files for `/assets/*`, `/sw.js`, icons and the manifest. The existing Cloudflare production configuration has not been changed.
-
-## Browser QA
-
-Development-only Playwright, axe and fake-indexeddb dependencies are locked. Install the matching browser once:
-
-```sh
 npx playwright install chromium
 ```
 
-With production preview running at port 4173:
+With production preview running on port 4173:
 
 ```sh
 npm run qa:browser -- http://127.0.0.1:4173
 npm run qa:unsaved
 npm run qa:prepare-v1
 npm run qa:pwa
+npm run qa:android-shell
 ```
 
-`qa:prepare-v1` exports immutable production commit `0a1334e` with `git archive` inside ignored `output/playwright`, then builds it using the installed tools. It does not check out or modify `main`; Windows includes the required `tar` executable. `qa:pwa` starts a separate local test server, creates records through the actual V1 UI, swaps builds on the same origin, closes/reopens a persistent browser offline and exercises worker updates.
+QA uses synthetic data and isolated browser profiles. Results go to ignored
+`output/`; an existing full Chromium can be selected with
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE`. The legacy upgrade fixture uses immutable
+`git archive`, without checking out or modifying `main`.
 
-Scripts create isolated synthetic browser data and write screenshots, axe reports and result JSON to `output/playwright`. To use an existing full Chromium executable, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its absolute path. No personal browser profile or production data is used.
-
-## Saving and money
-
-- New bills start as drafts. Review saves the bill; Save bill makes a draft active. Save as draft remains available under bill options.
-- Changes require an explicit save. Unsaved forms are protected against accidental navigation and PWA update reloads. Mark settled saves current payments and status together.
-- USD and LBP remain separate; there is no exchange-rate conversion.
-- LBP entry uses thousands: `630` means LBP 630,000. Settlement transfers retain the existing LBP 1,000 rounding.
-- Menu prices are treated as tax-included. Add only applicable extras.
-- Equal, shares and custom splits, discounts, payment balances, transfers, saved/archived group members, statistics, duplication and summaries remain available.
-
-## Offline, updates and backups
-
-After a successful first online visit, the production app shell and assets are cached. Saved bills/groups stay in IndexedDB and remain usable offline. An update is offered when ready; it waits for unsaved changes and never automatically reloads while typing. Incomplete or mixed-deployment shells are rejected.
-
-History contains Export backup and Import backup. Clearing site/browser data or browser eviction can remove records; the offline cache is not a backup. Export before changing browsers, devices or origins.
-
-The database remains `splitleb-local-db` at schema version 2. Backup schema 1 and schema 2 imports are supported; exports remain schema 2. Duplicates are skipped and conflicting groups stop the import. No new database migration or data clearing is introduced by V2.
-
-Portable financial parity cases live in [golden-bills.json](src/domain/bill/fixtures/golden-bills.json). Android uses these same domain functions through Capacitor.
-
-## Acceptance limits
-
-Automated Chromium workflows, responsive checks and axe results are recorded in the verification document. Physical-device installation, VoiceOver/TalkBack/NVDA listening, Safari/Firefox and hosted Cloudflare acceptance are still manual review tasks. No numerical score in the review report represents formal certification.
+Release verification: **134 unit tests**, TypeScript/ESLint clean, **5 native
+shell checks**, web/PWA workflows and signed Android build pass. Android release
+lint has **0 errors / 8 advisory warnings**. Browser-native bridge mocks are not
+phone tests. The owner accepted the earlier debug build on their phone; final
+signed/icon-changed phone checks and other manual limits are in the
+[Android guide](docs/ANDROID.md#physical-device-follow-up).

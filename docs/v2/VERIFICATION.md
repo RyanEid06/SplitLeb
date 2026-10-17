@@ -1,5 +1,7 @@
 # V2 verification — 2026-10-17
 
+> Historical web/PWA verification. Counts, commits and no-release statements below describe that V2 run. Current Android evidence: [Android guide](../ANDROID.md). See the [archive index](README.md).
+
 Verified implementation commit: `4270880e04acf3eba4724336a6d95e8498ce8b92` on `v2`. Documentation commits after this do not change the application. Local `main` and cached `origin/main` remain `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. At the owner's follow-up request, the separate `v2` branch was published to GitHub on 2026-10-17; remote `main` was already `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064` before that push. No merge, deployment, tag or Cloudflare configuration change was performed.
 
 ## Commands and exact results

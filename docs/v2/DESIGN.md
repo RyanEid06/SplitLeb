@@ -1,5 +1,7 @@
 # SplitLeb V2 design and safety contract
 
+> Historical V2 design record. Later Android authorization and current release details are in the [Android guide](../ANDROID.md); context is in the [V2 archive index](README.md).
+
 Owner brief: [OWNER-BRIEF.md](OWNER-BRIEF.md). Authorized scope is the entire Web/PWA V2 pass, implemented inline on `v2`; the owner retains production approval. No merge, deployment, framework rewrite, Android package, account, AI, analytics or backend.
 
 ## Intent

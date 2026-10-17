@@ -1,5 +1,7 @@
 # Untouched V1 baseline — 2026-10-17
 
+> Historical baseline before V2. This is not the current repository state. Start with the [V2 archive index](README.md) or [current Android guide](../ANDROID.md).
+
 Production reference: `main` and `origin/main` at `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. Clean working tree before creation of `v2`. No repository AGENTS.md or parent guidance found. Cloudflare configuration is not present; hosting relationship is owner-supplied and must remain unchanged.
 
 ## Architecture

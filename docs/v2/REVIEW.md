@@ -1,5 +1,7 @@
 # Independent code review
 
+> Historical V2 code review. Current Android review/build evidence is in the [Android guide](../ANDROID.md). See the [V2 archive index](README.md) for context.
+
 Initial immutable range: production `0a1334e` through `ce5e4bd`. A fresh reviewer inspected the implementation read-only and independently executed a service-worker deployment-race simulation. No Critical findings. Two Important and one Minor finding were accepted:
 
 1. **Important:** status/MIME checks did not reject HTML from another deployment. Fixed by embedding/checking SHA-256 for every precached file. The reviewer independently reran the simulation: matching content installs; mixed HTML rejects and removes only the incomplete cache.
