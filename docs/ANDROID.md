@@ -106,7 +106,9 @@ assets, SDK paths, caches, build outputs and signing material are ignored.
   system picker. No legacy/external storage permission is needed.
 - No external web links were found in product screens; Capacitor's default
   external navigation handling remains. Clipboard uses the existing web API.
-- Permissions: app declares only `INTERNET`. No analytics, Firebase, tracking,
+- Permissions: `INTERNET` and `ACCESS_NETWORK_STATE` (normal install-time
+  permission needed by Chromium WebView's connectivity notifier; no runtime
+  prompt). No analytics, Firebase, tracking,
   authentication, remote database or sensitive runtime permissions. Auto Backup
   is disabled, consistent with local-only data and explicit JSON backups.
 - Only the launcher activity is exported. FileProvider is non-exported and
@@ -133,4 +135,52 @@ dirty, incomplete/mixed asset rejection and multi-tab retention.
 Full command logs are in ignored `output/android-qa/` and browser artifacts in
 `output/playwright/`. No emulator or physical device was attached at audit.
 
-APK build and independent review results will be added after verification.
+`npm run qa:android-shell` additionally passed five Chromium integration checks:
+native platform detection and offline cold load from intercepted packaged files,
+no worker/cache/update UI, actual router dirty-confirmation cancel, actual dialog
+Back cancellation, IndexedDB persistence over full browser close/reopen at
+`https://localhost`, and Home Back minimization. The Android bridge is mocked;
+this does not prove Android WebView execution or physical behavior.
+
+Independent review of `d465ff0..ef296b9` found no Critical issues. Its Important
+finding was the WebView connectivity permission; added `ACCESS_NETWORK_STATE`
+after confirming Chromium's notifier source requirement. Its Minor finding was
+Capacitor's generated instrumentation test's placeholder package assertion;
+replaced it with an optional real package/label smoke test and removed the
+generated trivial arithmetic test. Instrumentation remains unrun without a
+device. No findings were deferred. Physical behavior and APK inspection were
+explicitly outside the evidence available to the reviewer at that time.
+
+The initial SDK manager installation stalled at a zero-byte Build Tools
+download. Official platform/Build Tools archives are being downloaded directly
+and validated against Google's repository manifest; the tooling remains local
+and ignored. APK results will be added after verification.
+
+## Physical-device acceptance
+
+**PHYSICAL DEVICE QA REQUIRED** — none of these are marked passed:
+
+- [ ] APK installs and launches; app label, launcher logo and recent-app icon
+  match SplitLeb; splash is correct without white/placeholder flashes.
+- [ ] Home renders; all navigation works; create a group and USD/LBP bills;
+  save, review, reopen/edit and inspect History.
+- [ ] Force-close/reopen retains bills and groups. Installing a newer APK over
+  this one with the same signing key retains them too.
+- [ ] Airplane-mode cold launch; open old records; create/save a bill offline;
+  force-close and reopen while still offline; records remain available.
+- [ ] Reconnect: offline banner transitions correctly; local functionality is
+  available in both connectivity states.
+- [ ] Android Back closes dialogs first; unsaved navigation can be canceled;
+  Home Back backgrounds normally. Check gesture and three-button navigation.
+- [ ] Keyboard/numeric entry, long forms, dialogs and scrolling keep focused
+  fields and important controls reachable; first Back dismisses keyboard.
+- [ ] Export a JSON backup to a durable destination using the Android chooser;
+  inspect/reimport it. Canceling the chooser keeps all saved data unchanged.
+- [ ] Import via system picker, duplicates/conflicts and imported data work.
+  Transfer an existing browser/PWA backup into Android.
+- [ ] Status/navigation bars, cutouts and gesture area do not obscure controls;
+  landscape/rotation remains usable; no crashes during these workflows.
+
+Debug signing is for tests only. Keep this test installation's debug key if
+testing in-place updates. A later permanent release key must be owner-approved;
+switching from debug signing will require a backup/import migration.

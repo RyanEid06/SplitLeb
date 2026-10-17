@@ -19,7 +19,8 @@
     "android:sync": "npm run build && cap sync android",
     "android:open": "cap open android",
     "android:build": "npm run android:sync && node scripts/build-android.mjs",
-    "android:icons": "node scripts/generate-android-icons.mjs"
+    "android:icons": "node scripts/generate-android-icons.mjs",
+    "qa:android-shell": "node scripts/qa-android-shell.mjs"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",
