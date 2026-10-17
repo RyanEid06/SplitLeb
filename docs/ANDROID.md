@@ -45,6 +45,11 @@ Android SDK 36 / Build Tools 35.0.0, Gradle 8.14.3, Android Gradle Plugin 8.13.0
 minimum Android API 24. Use a current Android System WebView. Android Studio
 2025.2.1 or newer is the Capacitor 8 prerequisite.
 
+References: [Capacitor 8 prerequisites](https://capacitorjs.com/docs/updating/8-0),
+[configuration](https://capacitorjs.com/docs/config),
+[App Back API](https://capacitorjs.com/docs/apis/app),
+[Chromium connectivity notifier requirement](https://github.com/chromium/chromium/blob/main/net/android/java/src/org/chromium/net/NetworkChangeNotifierAutoDetect.java).
+
 The previously recorded SDK path is absent on this machine. Official command
 tools are being installed into ignored `output/android-sdk`; `local.properties`
 is ignored. No machine-wide environment setting is changed.
@@ -122,10 +127,16 @@ assets, SDK paths, caches, build outputs and signing material are ignored.
 ## Verification so far
 
 Baseline at `d465ff0`: typecheck/lint/build pass, **123 tests / 21 files** pass.
-After integration: typecheck/lint/build/sync pass, **133 tests / 23 files** pass.
+After integration: typecheck/lint/build/sync pass, **134 tests / 23 files** pass.
 New tests cover native worker isolation, Back routing/dialog cancellation,
 native backup/cancel/error paths and unchanged browser downloads. Native plugin
 calls are mocked only at the bridge boundary; these are not device proof.
+
+A final plugin-source check showed Android can also resolve the share chooser
+with an empty destination (not only reject cancellation). A regression failed
+with the old success result, then passed after treating this as "share sheet
+closed" and asking the user to confirm they saved a copy. The UI no longer
+claims successful sharing for that ambiguous result.
 
 Fresh Chromium 156 workflow checks passed at all 7 existing widths, including
 financial edge cases, backup roundtrip, dirty navigation and accessibility.

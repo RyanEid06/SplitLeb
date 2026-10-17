@@ -3,7 +3,7 @@ import { Capacitor } from "@capacitor/core";
 export async function saveBackupFile(
   filename: string,
   json: string,
-): Promise<"downloaded" | "shared" | "canceled"> {
+): Promise<"downloaded" | "shared" | "canceled" | "closed"> {
   if (Capacitor.isNativePlatform()) {
     const [{ Filesystem, Directory, Encoding }, { Share }] = await Promise.all([
       import("@capacitor/filesystem"),
@@ -17,10 +17,11 @@ export async function saveBackupFile(
       recursive: true,
     });
     try {
-      await Share.share({
+      const result = await Share.share({
         files: [file.uri],
         dialogTitle: "Save or share SplitLeb backup",
       });
+      if (!result.activityType) return "closed";
     } catch (error) {
       if (error instanceof Error && error.message === "Share canceled")
         return "canceled";

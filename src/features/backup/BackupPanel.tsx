@@ -30,7 +30,9 @@ export function BackupPanel({
           ? "Backup exported. Keep the file somewhere safe."
           : result === "canceled"
             ? "Export canceled. Your saved data is unchanged."
-            : "Backup shared. Keep a copy somewhere safe.",
+            : result === "closed"
+              ? "Share sheet closed. Make sure you saved a copy of the backup."
+              : "Backup shared. Keep a copy somewhere safe.",
       );
     } catch {
       setError("Could not export your backup. Please try again.");

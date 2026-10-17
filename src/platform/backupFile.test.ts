@@ -49,6 +49,15 @@ it("does not report a canceled Android chooser as a saved backup", async () => {
   expect(await saveBackupFile("test.json", "{}")).toBe("canceled");
 });
 
+it("does not claim successful sharing when Android reports no selected destination", async () => {
+  vi.spyOn(Capacitor, "isNativePlatform").mockReturnValue(true);
+  vi.spyOn(Filesystem, "writeFile").mockResolvedValue({
+    uri: "file:///cache/backups/test.json",
+  });
+  vi.spyOn(Share, "share").mockResolvedValue({ activityType: "" });
+  expect(await saveBackupFile("test.json", "{}")).toBe("closed");
+});
+
 it("propagates actual write errors instead of reporting success", async () => {
   vi.spyOn(Capacitor, "isNativePlatform").mockReturnValue(true);
   vi.spyOn(Filesystem, "writeFile").mockRejectedValue(new Error("Disk full"));
