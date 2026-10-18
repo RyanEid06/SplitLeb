@@ -1,3 +1,4 @@
+import { MoneyInput } from "../../components/ui/MoneyInput";
 import { useMemo } from "react";
 import type {
   BillExtra,
@@ -11,12 +12,7 @@ import {
   createDefaultExtra,
   validateExtra,
 } from "../../domain/bill/extras";
-import {
-  formatMoneyInputValue,
-  getMoneyInputLabel,
-  getMoneyInputPlaceholder,
-  parseMoneyInputToCents,
-} from "../../domain/bill/money";
+import { getMoneyInputLabel } from "../../domain/bill/money";
 import { formatMoneyFromCents } from "../../utils/formatting";
 
 type ExtrasPanelProps = {
@@ -87,10 +83,7 @@ export function ExtrasPanel({
       <div className="section-header">
         <div>
           <h2>Extras</h2>
-          <p>
-            Add service, tip, delivery, discounts, or custom charges. Menu prices
-            stay tax-included by default, so VAT is not added here.
-          </p>
+          <p>Service, tips, delivery, or a discount.</p>
           {currency === "LBP" ? (
             <p className="currency-input-note">
               LBP extra inputs use thousands. Type 210 for LBP 210,000.
@@ -109,7 +102,7 @@ export function ExtrasPanel({
 
       {extras.length === 0 ? (
         <div className="empty-card">
-          No extras yet. Add only what actually exists on the bill.
+          Add an extra only if it is on the bill.
         </div>
       ) : (
         <div className="extras-list">
@@ -149,21 +142,12 @@ export function ExtrasPanel({
 
                   <label>
                     <span>{getMoneyInputLabel("Amount", currency)}</span>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={formatMoneyInputValue(extra.amountCents, currency)}
-                      placeholder={getMoneyInputPlaceholder(currency)}
-                      onChange={(event) =>
-                        updateExtra(extra.id, {
-                          amountCents: parseMoneyInputToCents(
-                            event.target.value,
-                            currency,
-                          ),
-                        })
+                    <MoneyInput
+                      amountCents={extra.amountCents}
+                      currency={currency}
+                      onChange={(amount) =>
+                        updateExtra(extra.id, { amountCents: amount })
                       }
-                      inputMode="decimal"
                     />
                   </label>
 
@@ -230,28 +214,21 @@ export function ExtrasPanel({
                     {people.map((person) => (
                       <label key={person.id}>
                         <span>{person.name}</span>
-                        <input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          inputMode="decimal"
-                          aria-label={`${getMoneyInputLabel(
-                            "Custom amount",
-                            currency,
-                          )} for ${person.name}`}
-                          placeholder={currency === "LBP" ? "0" : "0.00"}
-                          value={formatMoneyInputValue(
-                            extra.customAmountsByPersonId?.[person.id] ?? 0,
-                            currency,
-                          )}
-                          onChange={(event) =>
+                        <MoneyInput
+                          amountCents={
+                            extra.customAmountsByPersonId?.[person.id] ?? 0
+                          }
+                          currency={currency}
+                          ariaLabel={
+                            getMoneyInputLabel("Custom amount", currency) +
+                            " for " +
+                            person.name
+                          }
+                          onChange={(amount) =>
                             updateExtra(extra.id, {
                               customAmountsByPersonId: {
-                                ...(extra.customAmountsByPersonId ?? {}),
-                                [person.id]: parseMoneyInputToCents(
-                                  event.target.value,
-                                  currency,
-                                ),
+                                ...extra.customAmountsByPersonId,
+                                [person.id]: amount,
                               },
                             })
                           }
@@ -279,7 +256,10 @@ export function ExtrasPanel({
                   <button
                     type="button"
                     className="danger-button"
-                    onClick={() => deleteExtra(extra.id)}
+                    onClick={() => {
+                      if (window.confirm("Delete " + extra.name + "?"))
+                        deleteExtra(extra.id);
+                    }}
                   >
                     Delete
                   </button>
@@ -299,7 +279,10 @@ export function ExtrasPanel({
               <div key={person.id} className="preview-row">
                 <span>{person.name}</span>
                 <strong>
-                  {formatMoneyFromCents(previewTotals[person.id] ?? 0, currency)}
+                  {formatMoneyFromCents(
+                    previewTotals[person.id] ?? 0,
+                    currency,
+                  )}
                 </strong>
               </div>
             ))}

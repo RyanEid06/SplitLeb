@@ -1,0 +1,1 @@
+PASS unsaved setup/person/item drafts and edits during activation prevent reload

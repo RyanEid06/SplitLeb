@@ -53,10 +53,15 @@ export function ShareSummaryPanel({ input }: ShareSummaryPanelProps) {
         </button>
       </div>
 
-      <div className="share-summary-toggle" aria-label="Share summary mode">
+      <div
+        className="share-summary-toggle"
+        aria-label="Share summary mode"
+        role="group"
+      >
         <button
           type="button"
           className={mode === "compact" ? "active" : ""}
+          aria-pressed={mode === "compact"}
           onClick={() => setMode("compact")}
         >
           Compact
@@ -65,6 +70,7 @@ export function ShareSummaryPanel({ input }: ShareSummaryPanelProps) {
         <button
           type="button"
           className={mode === "detailed" ? "active" : ""}
+          aria-pressed={mode === "detailed"}
           onClick={() => setMode("detailed")}
         >
           Detailed
@@ -77,6 +83,7 @@ export function ShareSummaryPanel({ input }: ShareSummaryPanelProps) {
 
       <textarea
         className="share-summary-textarea"
+        aria-label="Summary to copy"
         value={summaryText}
         readOnly
       />

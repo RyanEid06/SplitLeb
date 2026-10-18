@@ -99,6 +99,9 @@ function getStore(storeName: string) {
 
   if (storeName === "savedGroups") {
     return {
+      async getAll() {
+        return Array.from(savedGroups.values()).map(cloneGroup);
+      },
       async get(id: string) {
         const group = savedGroups.get(id);
         return group ? cloneGroup(group) : undefined;

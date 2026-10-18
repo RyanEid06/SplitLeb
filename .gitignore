@@ -25,3 +25,10 @@ dist-ssr
 
 # Local SplitLeb backups
 backups/
+
+# Local browser verification artifacts
+output/
+.playwright-cli/
+
+# Generated files left locally when switching from the separate Android branch
+/android/

@@ -1,158 +1,112 @@
+/* Build placeholders are replaced by Vite after all assets have been emitted. */
 const CACHE_PREFIX = "splitleb-app-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const CACHE_NAME = CACHE_PREFIX + "__SPLITLEB_BUILD_ID__";
+const PRECACHE_URLS = __SPLITLEB_PRECACHE__;
+const PRECACHE_DIGESTS = __SPLITLEB_DIGESTS__;
 const INDEX_URL = "/index.html";
-const ROOT_URL = "/";
-const CACHE_CURRENT_APP_SHELL_MESSAGE = "SPLITLEB_CACHE_CURRENT_APP_SHELL";
 
-function isSameOrigin(requestUrl) {
-  const url = new URL(requestUrl);
-  return url.origin === self.location.origin;
+function expectedType(path) {
+  if (path.endsWith(".js")) return /javascript/;
+  if (path.endsWith(".css")) return /text\/css/;
+  if (path.endsWith(".html")) return /text\/html/;
+  if (path.endsWith(".png")) return /image\/png/;
+  if (path.endsWith(".svg")) return /image\/svg/;
+  return /json/;
 }
-
-function isBuildAsset(url) {
-  return url.pathname.startsWith("/assets/");
-}
-
-function isPwaStaticFile(url) {
-  return (
-    url.pathname === "/manifest.webmanifest" ||
-    url.pathname === "/manifest.json" ||
-    url.pathname === "/favicon.ico" ||
-    url.pathname.startsWith("/icons/")
-  );
-}
-
-function getBuildAssetUrlsFromHtml(html) {
-  const urls = new Set();
-  const attributePattern = /(?:src|href)="([^"]+)"/g;
-
-  for (const match of html.matchAll(attributePattern)) {
-    const url = new URL(match[1], self.location.origin);
-
-    if (isBuildAsset(url)) {
-      urls.add(url.href);
-    }
-  }
-
-  return [...urls];
-}
-
-async function findCachedResponse(request) {
+async function cacheShell() {
   const cache = await caches.open(CACHE_NAME);
-  const url = new URL(request.url);
-
-  return (
-    (await cache.match(request, { ignoreVary: true })) ||
-    (await cache.match(url.href, { ignoreVary: true })) ||
-    (await cache.match(url.pathname, { ignoreVary: true }))
-  );
-}
-
-async function putCachedResponse(cache, cacheKey, response) {
-  if (response.ok && response.type === "basic") {
-    await cache.put(cacheKey, response.clone());
-  }
-}
-
-async function cacheCurrentAppShell() {
-  const cache = await caches.open(CACHE_NAME);
-  const indexResponse = await fetch(INDEX_URL, { cache: "no-store" });
-
-  if (!indexResponse.ok) {
-    throw new Error(`Could not cache SplitLeb app shell: ${indexResponse.status}`);
-  }
-
-  const html = await indexResponse.clone().text();
-  const buildAssetUrls = getBuildAssetUrlsFromHtml(html);
-
-  await cache.put(INDEX_URL, indexResponse.clone());
-  await cache.put(ROOT_URL, indexResponse.clone());
-
-  await Promise.all(
-    buildAssetUrls.map(async (assetUrl) => {
-      const response = await fetch(assetUrl, { cache: "no-store" });
-      await putCachedResponse(cache, assetUrl, response);
-    }),
-  );
-}
-
-async function handleNavigationRequest(request) {
   try {
-    const response = await fetch(request);
-
-    if (response.ok && response.type === "basic") {
-      const cache = await caches.open(CACHE_NAME);
-      await cache.put(INDEX_URL, response.clone());
-      await cache.put(ROOT_URL, response.clone());
-    }
-
-    return response;
-  } catch {
-    const cachedIndex = await caches.match(INDEX_URL, { ignoreVary: true });
-    return cachedIndex || Response.error();
+    // Fetch everything before publishing HTML. A missing chunk fails installation.
+    const responses = await Promise.all(
+      PRECACHE_URLS.map(async (url) => {
+        const response = await fetch(url, { cache: "reload" });
+        if (
+          !response.ok ||
+          !expectedType(url).test(response.headers.get("content-type") || "")
+        )
+          throw new Error("Incomplete app shell");
+        // Drain each stream as it arrives. Keeping several unread responses
+        // open can exhaust the browser's connection pool during installation.
+        const body = await response.arrayBuffer();
+        const digest = Array.from(
+          new Uint8Array(await crypto.subtle.digest("SHA-256", body)),
+          (byte) => byte.toString(16).padStart(2, "0"),
+        ).join("");
+        if (digest !== PRECACHE_DIGESTS[url])
+          throw new Error("App shell changed during installation");
+        return [
+          url,
+          new Response(body, {
+            status: response.status,
+            headers: response.headers,
+          }),
+        ];
+      }),
+    );
+    for (const [url, response] of responses) await cache.put(url, response);
+  } catch (error) {
+    await caches.delete(CACHE_NAME);
+    throw error;
   }
 }
-
-async function handleStaticRequest(request) {
-  const cachedResponse = await findCachedResponse(request);
-
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-
-  const response = await fetch(request);
-  const url = new URL(request.url);
-
-  if (response.ok && response.type === "basic" && (isBuildAsset(url) || isPwaStaticFile(url))) {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.put(request, response.clone());
-    await cache.put(url.href, response.clone());
-  }
-
-  return response;
-}
-
 self.addEventListener("install", (event) => {
-  event.waitUntil(cacheCurrentAppShell());
+  event.waitUntil(cacheShell());
 });
-
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      const cacheNames = await caches.keys();
-
-      await Promise.all(
-        cacheNames
-          .filter((cacheName) => cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME)
-          .map((cacheName) => caches.delete(cacheName)),
-      );
-
+      const clients = await self.clients.matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      });
+      // Other open tabs can still need an older bundle. Keep their caches.
+      if (clients.length <= 1) {
+        const names = (await caches.keys()).filter((name) =>
+          name.startsWith(CACHE_PREFIX),
+        );
+        const keep = new Set([
+          CACHE_NAME,
+          ...names.filter((name) => name !== CACHE_NAME).slice(-1),
+        ]);
+        await Promise.all(
+          names
+            .filter((name) => !keep.has(name))
+            .map((name) => caches.delete(name)),
+        );
+      }
       await self.clients.claim();
     })(),
   );
 });
-
 self.addEventListener("message", (event) => {
-  if (event.data?.type === CACHE_CURRENT_APP_SHELL_MESSAGE) {
-    event.waitUntil(cacheCurrentAppShell().catch(() => undefined));
-  }
+  if (event.data?.type === "SPLITLEB_ACTIVATE_UPDATE")
+    event.waitUntil(self.skipWaiting());
 });
-
 self.addEventListener("fetch", (event) => {
-  const { request } = event;
-
-  if (request.method !== "GET" || !isSameOrigin(request.url)) {
-    return;
-  }
-
+  const request = event.request;
   const url = new URL(request.url);
-
+  if (request.method !== "GET" || url.origin !== self.location.origin) return;
   if (request.mode === "navigate") {
-    event.respondWith(handleNavigationRequest(request));
-    return;
-  }
-
-  if (isBuildAsset(url) || isPwaStaticFile(url)) {
-    event.respondWith(handleStaticRequest(request));
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME);
+        return (await cache.match(INDEX_URL)) || fetch(request);
+      })(),
+    );
+  } else if (
+    url.pathname.startsWith("/assets/") ||
+    PRECACHE_URLS.includes(url.pathname)
+  ) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME);
+        // Hashed old assets may still be requested by another open tab.
+        return (
+          (await cache.match(url.pathname)) ||
+          (await caches.match(request)) ||
+          fetch(request)
+        );
+      })(),
+    );
   }
 });

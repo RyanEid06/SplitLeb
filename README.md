@@ -1,69 +1,87 @@
+<p align="center">
+  <img src="public/splitleb-logo.png" width="112" alt="SplitLeb logo">
+</p>
+
 # SplitLeb
 
-**Split fairly. Settle simply.**
+Split bills, track shared expenses and settle balances in USD or Lebanese pounds.
+SplitLeb works offline and keeps bills and groups on your device. No account or
+server is needed.
 
-SplitLeb is an offline-first expense-sharing web app for organizing group expenses, dividing bills, and calculating who owes whom. It is built with React, TypeScript, and IndexedDB, with a focus on accurate financial calculations and convenient local use.
+**[Open SplitLeb](https://splitleb.pages.dev)** — the finished V2 web app is now
+the production app on `main`.
 
-**[Try the live app](https://splitleb.pages.dev/)**
+## Branches
 
-## Features
-
-- **Groups and bills:** Save groups, manage participants, and keep track of itemized shared expenses.
-- **Flexible splitting:** Split expenses equally, by weighted shares, or with custom amounts.
-- **Cent-accurate calculations:** Use integer-based monetary allocations to avoid floating-point rounding mistakes.
-- **Settlement suggestions:** Calculate payment transfers between participants to settle shared balances.
-- **History:** Review saved bills and past expense activity.
-- **Local persistence:** Keep saved data in your browser's IndexedDB storage.
-- **Backup and restore:** Export and import JSON data to transfer or safeguard local records.
-- **Offline-friendly PWA:** Service-worker caching supports use without a network connection where cached resources are available.
-- **Automated tests:** Core allocation, settlement, bill-review, and persistence logic is covered by Vitest tests.
-
-## Technology
-
-| Area | Tools |
+| Branch | Purpose |
 | --- | --- |
-| Frontend | React 19, TypeScript, Vite |
-| Routing | React Router |
-| Local storage | IndexedDB via `idb` |
-| Testing | Vitest |
-| Delivery | Cloudflare Pages (public demo) |
+| [`main`](https://github.com/RyanEid06/SplitLeb/tree/main) | Current web/PWA production, based on completed V2 |
+| [`v1`](https://github.com/RyanEid06/SplitLeb/tree/v1) | Frozen original web app, preserved at its former production commit |
+| [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app) | Separate Android/APK implementation of the V2 app |
 
-## Getting started
+The former `v2` branch is incorporated into `main`; it is no longer a separate
+development branch. Historical source is also preserved by archive tags.
 
-Install a supported version of Node.js and npm, then run:
+Android is distributed separately: [official Android 1.0.1 APK and checksum](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.1).
+Official signed Android 1.0.0 can update in place. Web production does not bundle
+Capacitor or Android build files.
 
-```bash
-git clone https://github.com/RyanEid06/SplitLeb.git
-cd SplitLeb
+## Features and saving
+
+- Equal, shares and custom item splits; extras, discounts, payments and transfers.
+- Saved groups, archived members, history, statistics, duplication and summaries.
+- Offline editing with explicit Save and protection for unsaved changes.
+- USD and LBP remain separate; no exchange-rate conversion. LBP entry uses
+  thousands: `630` means LBP 630,000. Settlement transfers retain LBP 1,000 rounding.
+- JSON backup export/import, including supported older formats. Existing records
+  are kept, duplicate records are skipped, and conflicting groups stop import.
+
+## Existing data and updates
+
+The production address stays `https://splitleb.pages.dev`. Existing web records
+remain on that origin in `splitleb-local-db`. The storage repair upgrades DB
+versions 1/2 to 3, creating missing stores/indexes without resetting bills or
+groups. Backup JSON still supports schema 1/2 and exports schema 2.
+
+App-shell updates wait for unsaved work. Saved records are separate from offline
+asset caches; updates do not clear user data. History contains Export backup and
+Import backup. Browser clearing/eviction can remove local records, so keep backups.
+Preview URLs, the archived V1 site and Android each have separate local storage.
+
+## Development and verification
+
+Verified with Node.js 24.18.0 and npm 11.16.0.
+
+```sh
 npm ci
 npm run dev
-```
-
-Open the local development URL printed by Vite.
-
-## Quality checks
-
-```bash
+npm run typecheck
 npm run lint
 npm run test:run
 npm run build
+npm run preview -- --host 127.0.0.1 --port 4173
 ```
 
-To preview the production build locally:
+Production hosting serves `index.html` for app routes and real files for assets,
+service workers, icons and the manifest. Cloudflare continues deploying `main`.
+Development does not register production service workers.
 
-```bash
-npm run preview
+```sh
+npx playwright install chromium
+npm run qa:browser -- http://127.0.0.1:4173
+npm run qa:unsaved
+npm run qa:prepare-v1
+npm run qa:pwa
+npm run qa:legacy-tabs
+node scripts/qa-backup-import.mjs
 ```
 
-## Data and privacy
+QA uses isolated synthetic browser profiles and ignored `output/` artifacts.
+`qa:prepare-v1` reconstructs the exact archived production commit `e0ccf80`;
+`qa:pwa` creates records with its actual UI and tests the same-origin V2 upgrade,
+offline restart and protected service-worker updates. Optional acceptance of an
+unchanged private backup uses `SPLITLEB_REAL_BACKUP` for unit tests or a path
+argument to `qa-backup-import.mjs`; private data is never committed.
 
-SplitLeb's application data is saved locally in your browser using IndexedDB. Clearing your browser's site data can remove saved groups and bills, so export a backup before resetting or switching devices. JSON backups should be stored carefully if they contain private financial information.
-
-## Links
-
-- **Live application:** https://splitleb.pages.dev/
-- **Source code:** https://github.com/RyanEid06/SplitLeb
-
-## Project status
-
-Independent software project and portfolio application. For a quick demonstration, open the live app and create a sample group and expense.
+See [production promotion and recovery](docs/PRODUCTION-PROMOTION.md),
+[current continuity](V2-CONTINUITY.md), and the [historical V2 verification](docs/v2/VERIFICATION.md).

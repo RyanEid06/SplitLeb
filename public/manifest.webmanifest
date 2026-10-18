@@ -6,8 +6,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f4f1ea",
-  "theme_color": "#1f3d2b",
+  "background_color": "#101714",
+  "theme_color": "#101714",
   "categories": ["finance", "productivity", "utilities"],
   "icons": [
     {
@@ -21,6 +21,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icons/splitleb-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

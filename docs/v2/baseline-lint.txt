@@ -1,0 +1,96 @@
+
+> splitleb@0.0.0 lint
+> eslint .
+
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\BillWorkspacePage.tsx
+  28:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\BillWorkspacePage.tsx:28:7
+  26 |   useEffect(() => {
+  27 |     if (!billId) {
+> 28 |       setIsLoadingBill(false);
+     |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  29 |       return;
+  30 |     }
+  31 |  react-hooks/set-state-in-effect
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\HistoryPage.tsx
+  99:10  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\HistoryPage.tsx:99:10
+   97 |
+   98 |   useEffect(() => {
+>  99 |     void loadBills();
+      |          ^^^^^^^^^ Avoid calling setState() directly within an effect
+  100 |   }, []);
+  101 |
+  102 |   async function handleExportAllBills() {  react-hooks/set-state-in-effect
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\ReviewPage.tsx
+  39:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\ReviewPage.tsx:39:7
+  37 |   useEffect(() => {
+  38 |     if (!billId) {
+> 39 |       setIsLoadingBill(false);
+     |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |       setLoadError("Missing bill ID.");
+  41 |       return;
+  42 |     }  react-hooks/set-state-in-effect
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\SavedGroupsPage.tsx
+  726:10  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\SavedGroupsPage.tsx:726:10
+  724 |
+  725 |   useEffect(() => {
+> 726 |     void loadGroups();
+      |          ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  727 |   }, []);
+  728 |
+  729 |   useEffect(() => {                                                                                react-hooks/set-state-in-effect
+  731:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Administrator\Desktop\Projects\splitleb\src\pages\SavedGroupsPage.tsx:731:7
+  729 |   useEffect(() => {
+  730 |     if (!selectedGroup) {
+> 731 |       setGroupNameDraft("");
+      |       ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  732 |       setNewMemberName("");
+  733 |       setMemberNameDrafts({});
+  734 |       return;  react-hooks/set-state-in-effect
+  740:6   warning  React Hook useEffect has a missing dependency: 'selectedGroup'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
+
+✖ 6 problems (5 errors, 1 warning)
+

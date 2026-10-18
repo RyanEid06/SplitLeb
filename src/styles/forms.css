@@ -1,206 +1,140 @@
-label {
-  color: var(--text);
-  font-weight: 780;
+label,
+.field {
+  display: grid;
+  gap: 8px;
+  font-size: 0.88rem;
 }
-
 input,
 select,
 textarea {
+  width: 100%;
   min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
-    var(--surface-inset);
-  color: var(--text-strong);
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.4;
 }
-
 input::placeholder,
 textarea::placeholder {
   color: var(--text-soft);
 }
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--primary-border);
-  outline: none;
-  box-shadow: var(--focus-ring);
+input[type="checkbox"],
+input[type="radio"] {
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+  accent-color: var(--primary);
 }
-
-select {
-  color: var(--text-strong);
-}
-
-option {
-  background: var(--surface);
-  color: var(--text-strong);
-}
-
-.quick-item-form {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(280px, 2.4fr) minmax(80px, 0.5fr) minmax(
-      120px,
-      0.75fr
-    ) auto;
-  gap: 0.75rem;
-  align-items: end;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 42%),
-    var(--surface-soft);
-  box-shadow: var(--shadow-card);
-}
-
-.quick-item-form label,
-.assignment-panel label,
-.bill-note-card label {
-  display: grid;
-  min-width: 0;
-  gap: 0.4rem;
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  font-weight: 850;
-  letter-spacing: 0.015em;
-}
-
-.quick-item-form input,
-.assignment-panel input,
-.assignment-panel select,
-.assignment-panel textarea,
-.bill-note-card textarea,
-.items-table input,
-.money-input {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
-    var(--surface-inset);
-  color: var(--text-strong);
-  padding: 0.65rem 0.75rem;
-  font: inherit;
-  font-weight: 680;
-}
-
-.quick-item-form input:focus,
-.assignment-panel input:focus,
-.assignment-panel select:focus,
-.assignment-panel textarea:focus,
-.bill-note-card textarea:focus,
-.items-table input:focus,
-.money-input:focus {
-  border-color: var(--primary-border);
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.assignment-panel textarea,
-.bill-note-card textarea {
+textarea {
   resize: vertical;
-  line-height: 1.45;
 }
-
-.money-input {
-  width: 8rem;
-  color: var(--text-strong);
-  font-variant-numeric: tabular-nums;
-}
-
-.field-help {
-  display: block;
-  margin-top: -0.1rem;
-  color: var(--text-soft);
-  font-size: 0.78rem;
-  font-weight: 720;
-  line-height: 1.35;
-}
-
-.currency-input-note {
-  margin: 0.35rem 0 0;
+input:disabled {
   color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 760;
 }
-
-.fake-form-grid {
-  display: grid;
+fieldset {
   min-width: 0;
-  grid-template-columns: minmax(0, 1.2fr) minmax(140px, 180px) minmax(
-      140px,
-      180px
-    );
-  gap: 14px;
-}
-
-.fake-form-grid label {
-  display: grid;
-  min-width: 0;
-  gap: 8px;
-  color: var(--text-muted);
-  font-size: 0.84rem;
-  font-weight: 850;
-}
-
-.fake-form-grid input,
-.fake-form-grid select {
-  width: 100%;
-  min-width: 0;
-  height: 44px;
-  padding: 0 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
-    var(--surface-inset);
-  color: var(--text-strong);
-}
-
-.validation-box {
-  display: grid;
-  gap: 0.35rem;
-  border: 1px solid var(--danger-border);
-  border-radius: var(--radius-md);
-  padding: 0.85rem;
-  background: var(--danger-bg);
-  color: var(--danger);
-  font-size: 0.85rem;
-  font-weight: 760;
-}
-
-.validation-box p {
+  border: 0;
+  padding: 0;
   margin: 0;
 }
-
-.warning-box {
-  margin-top: 1rem;
-  border: 1px solid var(--warning-border);
-  border-radius: var(--radius-md);
-  background:
-    linear-gradient(180deg, rgba(242, 195, 107, 0.12), transparent),
-    var(--warning-bg);
-  color: #ffe0a3;
-  padding: 0.9rem;
-  font-weight: 720;
-  line-height: 1.55;
+legend {
+  font-size: 0.88rem;
+  margin-bottom: 8px;
 }
-
-@media (max-width: 900px) {
-  .quick-item-form,
-  .fake-form-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .quick-item-form button {
-    width: 100%;
-  }
-
-  .money-input {
-    width: 100%;
-  }
+.field-help {
+  font-size: 0.82rem;
+}
+.person-form {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.person-form .form-actions {
+  align-self: end;
+}
+.people-list {
+  display: grid;
+}
+.person-card,
+.person-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.person-card {
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.person-main {
+  min-width: 0;
+}
+.person-main > div {
+  min-width: 0;
+}
+.person-main strong {
+  font-size: 0.95rem;
+}
+.emoji-row,
+.color-row,
+.recent-people-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.emoji-button,
+.color-button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+}
+.color-button {
+  border: 4px solid var(--surface);
+  outline: 1px solid var(--border);
+}
+.color-button.selected {
+  outline: 2px solid var(--primary);
+}
+.recent-people-panel {
+  margin-bottom: 20px;
+}
+.recent-people-header {
+  display: flex;
+  gap: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+}
+.recent-person-button {
+  padding: 6px 10px;
+}
+.recent-person-avatar {
+  display: none;
+}
+.form-disclosure {
+  margin: 12px 0;
+}
+summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 550;
+}
+summary::before {
+  content: "+";
+  color: var(--primary);
+  font-weight: 600;
+}
+details[open] > summary::before {
+  content: "−";
+}
+details > :not(summary) {
+  margin-top: 16px;
 }

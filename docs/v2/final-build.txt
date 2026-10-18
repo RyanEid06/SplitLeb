@@ -1,0 +1,14 @@
+
+> splitleb@2.0.0-preview.1 build
+> tsc -b && vite build
+
+vite v8.0.10 building client environment for production...
+[2K
+transforming...✓ 78 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.78 kB │ gzip:   0.42 kB
+dist/assets/index-BggCHLVQ.css   25.00 kB │ gzip:   5.81 kB
+dist/assets/index-BEdl0oWJ.js   388.39 kB │ gzip: 117.06 kB
+
+✓ built in 397ms

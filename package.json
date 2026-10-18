@@ -1,7 +1,7 @@
 {
   "name": "splitleb",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,14 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typecheck": "tsc -b",
+    "qa:browser": "node scripts/qa-browser.mjs",
+    "qa:pwa": "node scripts/qa-pwa.mjs",
+    "format": "prettier --write src scripts vite.config.ts index.html public/manifest.webmanifest",
+    "qa:prepare-v1": "node scripts/prepare-v1-qa.mjs",
+    "qa:unsaved": "node scripts/qa-unsaved.mjs",
+    "qa:legacy-tabs": "node scripts/qa-legacy-tabs.mjs"
   },
   "dependencies": {
     "idb": "^8.0.3",
@@ -19,6 +26,7 @@
     "react-router-dom": "^7.14.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
@@ -27,7 +35,10 @@
     "eslint": "^10.2.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
+    "fake-indexeddb": "6.2.6",
     "globals": "^17.5.0",
+    "playwright": "1.64.1",
+    "prettier": "3.9.10",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10",
