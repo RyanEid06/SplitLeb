@@ -1,10 +1,25 @@
-# SplitLeb
+# SplitLeb V1 — archived web application
+
+This branch preserves the original web app. Its application code is archived at
+[`web-v1-archive-2026-10-18`](https://github.com/RyanEid06/SplitLeb/tree/web-v1-archive-2026-10-18)
+(`e0ccf80`); later commits maintain documentation only.
+
+The current [web/PWA app](https://splitleb.pages.dev/) is maintained on
+[`main`](https://github.com/RyanEid06/SplitLeb/tree/main), incorporating completed
+V2. The separate [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app)
+branch provides [official Android 1.0.1](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.1).
+These are the three branches; there is no separate `v2` branch.
 
 **Split fairly. Settle simply.**
 
 SplitLeb is an offline-first expense-sharing web app for organizing group expenses, dividing bills, and calculating who owes whom. It is built with React, TypeScript, and IndexedDB, with a focus on accurate financial calculations and convenient local use.
 
-**[Try the live app](https://splitleb.pages.dev/)**
+**[Open the archived V1 preview](https://v1.splitleb.pages.dev/)**
+
+The preview has separate browser storage from production. This is historical
+code, not the current storage/import repair. Do not deploy it over a production
+database upgraded to version 3 or clear user data to downgrade. See
+[current recovery guidance](https://github.com/RyanEid06/SplitLeb/blob/main/docs/PRODUCTION-PROMOTION.md#recovery-constraints).
 
 ## Features
 
@@ -26,14 +41,14 @@ SplitLeb is an offline-first expense-sharing web app for organizing group expens
 | Routing | React Router |
 | Local storage | IndexedDB via `idb` |
 | Testing | Vitest |
-| Delivery | Cloudflare Pages (public demo) |
+| Delivery | Cloudflare Pages (archived V1 preview) |
 
 ## Getting started
 
 Install a supported version of Node.js and npm, then run:
 
 ```bash
-git clone https://github.com/RyanEid06/SplitLeb.git
+git clone --branch v1 https://github.com/RyanEid06/SplitLeb.git
 cd SplitLeb
 npm ci
 npm run dev
@@ -61,9 +76,13 @@ SplitLeb's application data is saved locally in your browser using IndexedDB. Cl
 
 ## Links
 
-- **Live application:** https://splitleb.pages.dev/
-- **Source code:** https://github.com/RyanEid06/SplitLeb
+- [Archived V1 preview](https://v1.splitleb.pages.dev/)
+- [Current production web/PWA](https://splitleb.pages.dev/)
+- [Current web source and documentation](https://github.com/RyanEid06/SplitLeb/tree/main)
+- [Official Android 1.0.1 release](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.1)
 
 ## Project status
 
-Independent software project and portfolio application. For a quick demonstration, open the live app and create a sample group and expense.
+Archived version of an independent software project. For the current portfolio
+demonstration and maintained documentation, open the production app or `main`.
+The feature list and development commands above describe this V1 source only.
