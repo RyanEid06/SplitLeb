@@ -53,10 +53,12 @@ storage is not a backup.
 | Branch | Purpose |
 | --- | --- |
 | [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app) | Android release source, resources and build scripts based on V2 |
-| [`v2`](https://github.com/RyanEid06/SplitLeb/tree/v2) | Completed web/PWA V2 |
-| [`main`](https://github.com/RyanEid06/SplitLeb/tree/main) | Existing production web source |
+| [`main`](https://github.com/RyanEid06/SplitLeb/tree/main) | Current web/PWA production, incorporating completed V2 |
+| [`v1`](https://github.com/RyanEid06/SplitLeb/tree/v1) | Archived original web application |
 
-The Android release does not merge or deploy changes over the web branches.
+The [web/PWA production app](https://splitleb.pages.dev/) is maintained on `main`.
+The former `v2` branch was incorporated into `main` and removed. Android remains
+separate; its published APK does not update when the web site deploys.
 
 - [Android architecture, builds, signing and verification](docs/ANDROID.md)
 - [Historical V2 architecture and verification](docs/v2/README.md)
@@ -109,6 +111,7 @@ npm run qa:unsaved
 npm run qa:prepare-v1
 npm run qa:pwa
 npm run qa:android-shell
+node scripts/qa-backup-import.mjs
 ```
 
 QA uses synthetic data and isolated browser profiles. Results go to ignored
@@ -116,8 +119,10 @@ QA uses synthetic data and isolated browser profiles. Results go to ignored
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. The legacy upgrade fixture uses immutable
 `git archive`, without checking out or modifying `main`.
 
-Release verification: **134 unit tests**, TypeScript/ESLint clean, **5 native
-shell checks**, web/PWA workflows and signed Android build pass. Android release
+Android 1.0.1 verification: **160 tests / 26 files**, including the unchanged
+original backup; TypeScript/ESLint clean, **6 import scenarios**, **5 native
+shell checks**, and the signed Android build pass. Historical web/PWA proof is
+recorded separately in the Android guide. Android release
 lint has **0 errors / 8 advisory warnings**. Browser-native bridge mocks are not
 phone tests. The owner accepted the earlier debug build on their phone; final
 signed/icon-changed phone checks and other manual limits are in the

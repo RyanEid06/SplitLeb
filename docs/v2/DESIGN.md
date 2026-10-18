@@ -1,3 +1,8 @@
+> **Historical record:** This document describes the original V2 milestone.
+> V2 is now production on `main`; `v1` archives the old web app and
+> `android-app` contains the separate APK. See the [current records index](README.md)
+> for current branch, storage and release information. The original record follows.
+
 # SplitLeb V2 design and safety contract
 
 > Historical V2 design record. Later Android authorization and current release details are in the [Android guide](../ANDROID.md); context is in the [V2 archive index](README.md).

@@ -1,7 +1,7 @@
 # SplitLeb — maintainer continuity
 
-Current Android release work belongs on **`android-app`**, created from latest
-remote `v2` at `d465ff0a4cf9dec19b10e7bf33a83cbb75be9622` on 2026-10-17.
+Current Android release work belongs on **`android-app`**, originally created
+from V2 at `d465ff0a4cf9dec19b10e7bf33a83cbb75be9622` on 2026-10-17.
 Start with [docs/ANDROID.md](docs/ANDROID.md) for current build/signing instructions,
 verification, APK hashes and the physical-device checklist. Historical V2 records
 are indexed in [docs/v2/README.md](docs/v2/README.md).
@@ -13,15 +13,23 @@ APK working on their phone and accepted the application. They requested a full
 mint launcher icon and the first permanently signed public GitHub Release named
 **SplitLeb Android 1.0.0**, plus current source/docs on `android-app`.
 
-Do not merge, force-push, rename/delete branches, change hosting, or modify
-`main`/`v2`. Local `main` remains `0a1334ed44cde1ef1cb48550fef18a71356f41e1`;
-remote `main` was already `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064` before Android.
-The earlier V2 brief's web-only limits describe that historical milestone;
-the later Android/release authorization supersedes those limits for this branch.
+The owner subsequently authorized the import/storage hotfix and official
+Android 1.0.1 update on 2026-10-18. They also approved the web production switch:
+`main` now contains completed V2, `v1` archives the original web application,
+and `android-app` remains the separate APK implementation. The former `v2`
+branch was incorporated into `main` and removed. These are the three branches.
+Earlier V2 review-only and main-untouched restrictions describe historical work.
+
+Documentation maintenance is authorized across all three branches. Preserve
+their application boundaries, immutable archive/release tags and published APKs.
+Web production is [splitleb.pages.dev](https://splitleb.pages.dev/); its current
+[continuity guide](https://github.com/RyanEid06/SplitLeb/blob/main/V2-CONTINUITY.md)
+records the promotion and web-specific storage recovery behavior.
 
 ## Release identity
 
-- Packaged source: the commit tagged `android-v1.0.1` on `android-app`.
+- Packaged source: `bb7d3dabcc800e5927d764b00d57ad06596b561d`, tagged
+  `android-v1.0.1`. Later documentation commits do not change the published APK.
 - Tag: `android-v1.0.1`; backup-import/storage hotfix authorized 2026-10-18.
 - Android versionName `1.0.1`, versionCode `3`; web version stays `2.0.0-preview.1`.
 - Permanent application ID `com.splitleb.app`; native origin `https://localhost`.

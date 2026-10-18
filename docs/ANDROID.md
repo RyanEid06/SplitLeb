@@ -6,8 +6,9 @@ Download [SplitLeb Android 1.0.1](https://github.com/RyanEid06/SplitLeb/releases
 The release contains the signed APK and its SHA-256 checksum.
 
 - Source branch: [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app),
-  created from latest remote `v2`, `d465ff0a4cf9dec19b10e7bf33a83cbb75be9622`.
-- Packaged source: the commit tagged `android-v1.0.1` on `android-app`.
+  originally created from V2, `d465ff0a4cf9dec19b10e7bf33a83cbb75be9622`.
+- Packaged source: `bb7d3dabcc800e5927d764b00d57ad06596b561d`, tagged
+  `android-v1.0.1`; later documentation commits do not change the APK.
 - Original 1.0.0 packaged source: `824ca93770f4cf6d6ca485f62772757d404217e2`.
 - Release tag: `android-v1.0.1`, on `android-app`.
 - Permanent package ID: **`com.splitleb.app`**; app label: **SplitLeb**.
@@ -27,9 +28,12 @@ repairing stores/indexes without resetting records. Backup JSON stays schema 2.
 See [the regression report](BACKUP-IMPORT-REGRESSION.md) for the reproduction,
 atomic merge behavior, error categories and migration tests.
 
-No merge, branch deletion, Cloudflare deployment or `main`/`v2` change is part of
-this release. Local `main` remains `0a1334ed44cde1ef1cb48550fef18a71356f41e1`;
-remote `main` was already `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064`.
+The APK release itself made no hosting or web-branch changes. Subsequently, the
+owner promoted V2 to `main` and removed the separate `v2` branch. The three
+branches are now `main` (current web/PWA), `v1` (archived original web app), and
+`android-app` (APK). [Web production](https://splitleb.pages.dev/) and the APK
+have separate local storage and release lifecycles. See the
+[web promotion report](https://github.com/RyanEid06/SplitLeb/blob/main/docs/PRODUCTION-PROMOTION.md).
 
 ## Architecture
 
