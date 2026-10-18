@@ -11,6 +11,7 @@ import {
 import type { SavedGroup, SavedGroupMember } from "../domain/groups/types";
 import { getDb, type BillStatus, type StoredBill } from "./db";
 import { hasBillRecordStructure } from "./backupValidation";
+import { BackupImportError } from "./backupImportError";
 
 type BillInput = Bill & {
   id?: string;
@@ -22,10 +23,7 @@ type BillInput = Bill & {
 };
 
 export type BillSummaryPaymentStatus =
-  | "unpaid"
-  | "partial"
-  | "paid"
-  | "overpaid";
+  "unpaid" | "partial" | "paid" | "overpaid";
 
 export type BillSummary = {
   id: string;
@@ -164,7 +162,9 @@ function getPaymentStatus(params: {
   return "overpaid";
 }
 
-function getSummaryMetrics(bill: StoredBill): Pick<
+function getSummaryMetrics(
+  bill: StoredBill,
+): Pick<
   BillSummary,
   | "billTotalCents"
   | "paidTotalCents"
@@ -314,7 +314,10 @@ function isSavedGroup(value: unknown): value is SavedGroup {
 
 function parseStoredBill(value: unknown): StoredBill {
   if (!isStoredBill(value)) {
-    throw new Error("Backup contains an invalid bill.");
+    throw new BackupImportError(
+      "invalid-bill",
+      "Backup contains an invalid bill.",
+    );
   }
 
   return {
@@ -325,11 +328,22 @@ function parseStoredBill(value: unknown): StoredBill {
 
 function parseSavedGroup(value: unknown): SavedGroup {
   if (!isSavedGroup(value)) {
-    throw new Error("Backup contains an invalid saved group.");
+    throw new BackupImportError(
+      "invalid-group",
+      "Backup contains an invalid saved group.",
+    );
   }
 
   const group = normalizeSavedGroup(value);
-  assertValidSavedGroup(group);
+  try {
+    assertValidSavedGroup(group);
+  } catch (cause) {
+    throw new BackupImportError(
+      "invalid-group",
+      "Backup contains an invalid saved group.",
+      cause,
+    );
+  }
 
   return group;
 }
@@ -339,7 +353,10 @@ function assertUniqueBackupIds(records: { id: string }[], label: string) {
 
   for (const record of records) {
     if (ids.has(record.id)) {
-      throw new Error(`Backup contains duplicate ${label} ids.`);
+      throw new BackupImportError(
+        label === "bill" ? "invalid-bill" : "invalid-group",
+        `Backup contains duplicate ${label} ids.`,
+      );
     }
 
     ids.add(record.id);
@@ -348,26 +365,36 @@ function assertUniqueBackupIds(records: { id: string }[], label: string) {
 
 function parseSplitLebBackup(value: unknown): ParsedSplitLebBackup {
   if (!isRecord(value)) {
-    throw new Error("Backup file is not valid JSON.");
+    throw new BackupImportError(
+      "invalid-backup",
+      "Backup file is not a backup object.",
+    );
   }
 
   if (value.appName !== "SplitLeb") {
-    throw new Error("This is not a SplitLeb backup file.");
+    throw new BackupImportError(
+      "invalid-backup",
+      "This is not a SplitLeb backup file.",
+    );
   }
 
   if (value.schemaVersion !== 1 && value.schemaVersion !== 2) {
-    throw new Error("Unsupported SplitLeb backup version.");
+    throw new BackupImportError(
+      "unsupported-schema",
+      "Unsupported SplitLeb backup version.",
+    );
   }
 
   if (!Array.isArray(value.bills)) {
-    throw new Error("Backup file does not contain bills.");
+    throw new BackupImportError(
+      "invalid-bill",
+      "Backup file does not contain bills.",
+    );
   }
 
   const bills = value.bills.map(parseStoredBill);
   const groups =
-    value.schemaVersion === 2
-      ? parseSavedGroupsFromV2Backup(value.groups)
-      : [];
+    value.schemaVersion === 2 ? parseSavedGroupsFromV2Backup(value.groups) : [];
 
   assertUniqueBackupIds(bills, "bill");
   assertUniqueBackupIds(groups, "group");
@@ -384,7 +411,10 @@ function parseSplitLebBackup(value: unknown): ParsedSplitLebBackup {
 
 function parseSavedGroupsFromV2Backup(value: unknown): SavedGroup[] {
   if (!Array.isArray(value)) {
-    throw new Error("Backup file does not contain saved groups.");
+    throw new BackupImportError(
+      "invalid-group",
+      "Backup file does not contain saved groups.",
+    );
   }
 
   return value.map(parseSavedGroup);
@@ -407,13 +437,17 @@ function validateBackupGroupReferences(
 
     if (groupId !== undefined) {
       if (!isText(groupId)) {
-        throw new Error(`Backup bill "${getBillTitle(bill)}" has an invalid groupId.`);
+        throw new BackupImportError(
+          "missing-relationship",
+          `Backup bill "${getBillTitle(bill)}" has an invalid groupId.`,
+        );
       }
 
       const group = groupsById.get(groupId);
 
       if (!group) {
-        throw new Error(
+        throw new BackupImportError(
+          "missing-relationship",
           `Backup bill "${getBillTitle(bill)}" is linked to a missing saved group.`,
         );
       }
@@ -426,7 +460,10 @@ function validateBackupGroupReferences(
   }
 }
 
-function validateBillGroupMemberReferences(bill: StoredBill, group: SavedGroup) {
+function validateBillGroupMemberReferences(
+  bill: StoredBill,
+  group: SavedGroup,
+) {
   const groupMemberIds = new Set(group.members.map((member) => member.id));
 
   for (const person of bill.people) {
@@ -437,7 +474,8 @@ function validateBillGroupMemberReferences(bill: StoredBill, group: SavedGroup) 
     if (groupMemberId === undefined) continue;
 
     if (!isText(groupMemberId) || !groupMemberIds.has(groupMemberId)) {
-      throw new Error(
+      throw new BackupImportError(
+        "missing-relationship",
         `Backup bill "${getBillTitle(bill)}" contains a person linked to a missing group member.`,
       );
     }
@@ -449,7 +487,8 @@ function validateStandaloneBillHasNoGroupMemberLinks(bill: StoredBill) {
     if (!isRecord(person)) continue;
 
     if (person.groupMemberId !== undefined) {
-      throw new Error(
+      throw new BackupImportError(
+        "missing-relationship",
         `Backup bill "${getBillTitle(bill)}" contains a group member link but no groupId.`,
       );
     }
@@ -584,75 +623,98 @@ export async function importBillsFromBackup(
   backupInput: unknown,
 ): Promise<ImportSplitLebBackupResult> {
   const backup = parseSplitLebBackup(backupInput);
-  const db = await getDb();
-  const existingGroups = await db.getAll("savedGroups");
-  const groupsById = new Map<string, SavedGroup>();
-
-  for (const group of existingGroups) {
-    groupsById.set(group.id, group);
+  let db;
+  let tx;
+  try {
+    db = await getDb();
+    tx = db.transaction(["bills", "savedGroups"], "readwrite");
+  } catch (cause) {
+    throw new BackupImportError("database", undefined, cause);
   }
+  // Observe completion immediately: failed requests also reject tx.done.
+  const completed = tx.done.catch(() => {});
+  try {
+    const billsStore = tx.objectStore("bills");
+    const groupsStore = tx.objectStore("savedGroups");
+    // Read, conflict-check, validate relationships and merge in the same transaction
+    // so another import/edit cannot change the group snapshot between checks/writes.
+    const existingGroups = await groupsStore.getAll();
+    const groupsById = new Map<string, SavedGroup>();
 
-  for (const group of backup.groups) {
-    const existingGroup = groupsById.get(group.id);
-
-    if (existingGroup && !savedGroupsAreEquivalent(existingGroup, group)) {
-      throw new Error(
-        `Backup saved group "${group.name}" conflicts with an existing saved group.`,
-      );
+    for (const group of existingGroups) {
+      groupsById.set(group.id, group);
     }
 
-    groupsById.set(group.id, group);
-  }
+    for (const group of backup.groups) {
+      const existingGroup = groupsById.get(group.id);
 
-  validateBackupGroupReferences(backup.bills, groupsById);
+      if (existingGroup && !savedGroupsAreEquivalent(existingGroup, group)) {
+        throw new BackupImportError(
+          "group-conflict",
+          `Backup saved group "${group.name}" conflicts with an existing saved group.`,
+        );
+      }
 
-  const tx = db.transaction(["bills", "savedGroups"], "readwrite");
-  const billsStore = tx.objectStore("bills");
-  const groupsStore = tx.objectStore("savedGroups");
-
-  let importedBillCount = 0;
-  let skippedBillCount = 0;
-  let importedGroupCount = 0;
-  let skippedGroupCount = 0;
-
-  for (const group of backup.groups) {
-    const existingGroup = await groupsStore.get(group.id);
-
-    if (existingGroup) {
-      skippedGroupCount += 1;
-      continue;
+      groupsById.set(group.id, group);
     }
 
-    await groupsStore.put(group);
-    importedGroupCount += 1;
-  }
+    validateBackupGroupReferences(backup.bills, groupsById);
 
-  for (const bill of backup.bills) {
-    const existingBill = await billsStore.get(bill.id);
+    let importedBillCount = 0;
+    let skippedBillCount = 0;
+    let importedGroupCount = 0;
+    let skippedGroupCount = 0;
 
-    if (existingBill) {
-      skippedBillCount += 1;
-      continue;
+    for (const group of backup.groups) {
+      const existingGroup = await groupsStore.get(group.id);
+
+      if (existingGroup) {
+        skippedGroupCount += 1;
+        continue;
+      }
+
+      await groupsStore.put(group);
+      importedGroupCount += 1;
     }
 
-    await billsStore.put({
-      ...bill,
-      title: getBillTitle(bill),
-    });
+    for (const bill of backup.bills) {
+      const existingBill = await billsStore.get(bill.id);
 
-    importedBillCount += 1;
+      if (existingBill) {
+        skippedBillCount += 1;
+        continue;
+      }
+
+      await billsStore.put({
+        ...bill,
+        title: getBillTitle(bill),
+      });
+
+      importedBillCount += 1;
+    }
+
+    await tx.done;
+
+    return {
+      importedBillCount,
+      skippedBillCount,
+      importedGroupCount,
+      skippedGroupCount,
+      importedCount: importedBillCount,
+      skippedCount: skippedBillCount,
+    };
+  } catch (cause) {
+    // A synchronous clone/JS failure does not automatically abort IndexedDB.
+    // Explicitly roll back every queued write, then consume the abort rejection.
+    try {
+      tx.abort();
+    } catch {
+      /* Already aborted or completed. */
+    }
+    await completed;
+    if (cause instanceof BackupImportError) throw cause;
+    throw new BackupImportError("transaction", undefined, cause);
   }
-
-  await tx.done;
-
-  return {
-    importedBillCount,
-    skippedBillCount,
-    importedGroupCount,
-    skippedGroupCount,
-    importedCount: importedBillCount,
-    skippedCount: skippedBillCount,
-  };
 }
 
 export async function deleteBill(id: string): Promise<void> {
@@ -682,7 +744,9 @@ export async function updateBillStatus(
   return updatedBill;
 }
 
-export async function duplicateBill(id: string): Promise<StoredBill | undefined> {
+export async function duplicateBill(
+  id: string,
+): Promise<StoredBill | undefined> {
   const db = await getDb();
   const original = await db.get("bills", id);
 

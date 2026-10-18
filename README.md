@@ -8,9 +8,11 @@ Split bills, track shared expenses and settle balances in USD or Lebanese pounds
 SplitLeb works offline and keeps bills and groups on your device. No account or
 server is needed.
 
-**[Download Android 1.0.0](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.0)**
+**[Download Android 1.0.1](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.1)**
 — permanently signed APK with a full mint launcher icon. Download
-`SplitLeb-Android-1.0.0.apk` from the release assets; the checksum is included.
+`SplitLeb-Android-1.0.1.apk` from the release assets; the checksum is included.
+This update repairs backup import on incomplete legacy databases while preserving
+existing records and the backup format.
 
 ## What you can do
 
@@ -31,6 +33,11 @@ The Android app packages the same React application locally through Capacitor.
 It can cold-launch without a connection; it does not load the hosted website.
 Updates are delivered as signed APKs. Android backup export opens the system
 share chooser: choose a durable destination and confirm the JSON file was saved.
+
+**Updating the official 1.0.0 release:** open the 1.0.1 APK and choose Update.
+It uses the same permanent signing key and package ID, with a higher version
+code. Keep app data; no uninstall is needed. Existing bills and groups migrate
+automatically without resetting storage.
 
 **Upgrading from the earlier debug APK:** export and verify a JSON backup before
 uninstalling it. Install the signed release, then import the backup. The debug

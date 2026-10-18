@@ -21,21 +21,22 @@ the later Android/release authorization supersedes those limits for this branch.
 
 ## Release identity
 
-- Packaged source: `824ca93770f4cf6d6ca485f62772757d404217e2`.
-- Tag: `android-v1.0.0`; subsequent documentation commits do not alter APK inputs.
-- Android versionName `1.0.0`, versionCode `2`; web version stays `2.0.0-preview.1`.
+- Packaged source: the commit tagged `android-v1.0.1` on `android-app`.
+- Tag: `android-v1.0.1`; backup-import/storage hotfix authorized 2026-10-18.
+- Android versionName `1.0.1`, versionCode `3`; web version stays `2.0.0-preview.1`.
 - Permanent application ID `com.splitleb.app`; native origin `https://localhost`.
 - Permanent key lives outside the checkout in the owner's `SplitLeb-Signing`
   directory. Preserve it. Windows DPAPI credentials are user/machine-bound;
   an off-machine recoverable backup still needs owner verification.
-- Desktop signed APK: `C:\Users\Administrator\Desktop\SplitLeb-Android-1.0.0.apk`.
+- Desktop signed APK: `C:\Users\Administrator\Desktop\SplitLeb-Android-1.0.1.apk`.
   Earlier `SplitLeb-Android-Test.apk` is retained separately and debug-signed.
 
 ## Preserve these properties
 
-- React remains the single app implementation; no financial/domain/storage or
-  public artwork changes relative to the V2 base.
-- Database `splitleb-local-db` version 2 and backup schemas 1/2 are retained.
+- React remains the single app implementation; no financial/domain or public
+  artwork changes. Storage/import changes are limited to the authorized hotfix.
+- Database `splitleb-local-db` migrates to version 3, repairing missing stores
+  and indexes without deleting records. Backup schemas 1/2 are retained.
   No startup/update clearing. Same-key updates keep package/origin stable.
 - Android packages local assets, skips PWA worker/update UI, and keeps connectivity
   feedback. Browser PWA update integrity and dirty-state protections remain.
@@ -45,15 +46,17 @@ the later Android/release authorization supersedes those limits for this branch.
 
 ## Verified and remaining
 
-Fresh release checks: TypeScript/ESLint pass, **134 tests / 23 files** pass,
-production build/sync pass, five Chromium native-shell checks pass, and signed
-release build/lint pass (**0 native lint errors / 8 advisory warnings**). All 16
-production assets match APK hashes; permanent certificate and zip alignment
-verify. Full web/PWA regression evidence and limitations are in the Android guide.
+The 1.0.1 hotfix passes TypeScript/ESLint and **160 tests / 26 files**, including
+the unchanged original 18-bill/3-group backup. Six production-asset Chromium
+import scenarios cover legacy schemas, preserved records, duplicates, file-read
+failure and post-commit refresh failure. Atomic rollback, invalid backups and
+blocked-upgrade retry have automated coverage. See docs/BACKUP-IMPORT-REGRESSION.md
+and docs/ANDROID.md for build/signature proof and historical web/PWA checks.
 
 The owner accepted the earlier debug build overall. The agent did not operate a
-phone; final signed/icon-changed phone checks remain distinct. Export/verify a
-backup before uninstalling debug, then install signed release and import.
+phone; signed-release phone checks remain distinct. Official signed 1.0.0 users
+install 1.0.1 in place with Update and keep data. Earlier debug users still need
+to export/verify a backup before the separate debug-to-release migration.
 Do not claim individual device checks, emulator execution or GitHub CI ran.
 
 No persistent automation was created. No global memories should be written

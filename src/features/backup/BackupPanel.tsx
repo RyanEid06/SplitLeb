@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 import { saveBackupFile } from "../../platform/backupFile";
 import { Capacitor } from "@capacitor/core";
-import {
-  exportAllBills,
-  importBillsFromBackup,
-} from "../../storage/billStorage";
+import { exportAllBills } from "../../storage/billStorage";
+import { reportBackupImportError } from "../../storage/backupImportError";
+import { importBackupFile } from "./importBackupFile";
 
 export function BackupPanel({
   onImported,
@@ -51,10 +50,7 @@ export function BackupPanel({
     setError("");
     setMessage("");
     try {
-      const result = await importBillsFromBackup(
-        JSON.parse(await file.text()) as unknown,
-      );
-      await onImported();
+      const result = await importBackupFile(file);
       setMessage(
         "Imported " +
           result.importedBillCount +
@@ -64,17 +60,19 @@ export function BackupPanel({
           (result.skippedBillCount + result.skippedGroupCount) +
           " duplicates.",
       );
+      try {
+        await onImported();
+      } catch (cause) {
+        console.error("SplitLeb backup imported; refresh failed", {
+          category: "refresh",
+          exception: cause instanceof Error ? cause.name : typeof cause,
+        });
+        setError(
+          "Your backup was imported, but the list could not refresh. Please reopen History.",
+        );
+      }
     } catch (error) {
-      const detail = error instanceof Error ? error.message : "";
-      setError(
-        detail.includes("Unsupported")
-          ? "This backup version isn't supported."
-          : detail.includes("conflicts")
-            ? "A group in this backup conflicts with an existing group. Nothing was imported."
-            : detail.includes("missing")
-              ? "This backup has missing group or member records. Nothing was imported."
-              : "This backup could not be imported. Check that it's a valid SplitLeb JSON backup.",
-      );
+      setError(reportBackupImportError(error));
     } finally {
       setBusy(false);
     }

@@ -21,7 +21,7 @@ it("upgrades a real v1 database without changing legacy bill records", async () 
   v1.close();
   const { getDb } = await import("./db");
   const upgraded = await getDb();
-  expect(upgraded.version).toBe(2);
+  expect(upgraded.version).toBe(3);
   expect(await upgraded.get("bills", legacy.id)).toEqual(legacy);
   expect(await upgraded.getAll("savedGroups")).toEqual([]);
   expect([...upgraded.transaction("savedGroups").store.indexNames]).toEqual([
