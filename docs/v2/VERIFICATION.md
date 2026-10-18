@@ -1,3 +1,8 @@
+> **Historical record:** This document describes the original V2 milestone.
+> V2 is now production on `main`; `v1` archives the old web app and
+> `android-app` contains the separate APK. See the [current records index](README.md)
+> for current branch, storage and release information. The original record follows.
+
 # V2 verification — 2026-10-17
 
 Verified implementation commit: `4270880e04acf3eba4724336a6d95e8498ce8b92` on `v2`. Documentation commits after this do not change the application. Local `main` and cached `origin/main` remain `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. At the owner's follow-up request, the separate `v2` branch was published to GitHub on 2026-10-17; remote `main` was already `e0ccf8067ec5bcaca122d2d57a5e2d6afcb24064` before that push. No merge, deployment, tag or Cloudflare configuration change was performed.

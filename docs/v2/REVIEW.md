@@ -1,3 +1,8 @@
+> **Historical record:** This document describes the original V2 milestone.
+> V2 is now production on `main`; `v1` archives the old web app and
+> `android-app` contains the separate APK. See the [current records index](README.md)
+> for current branch, storage and release information. The original record follows.
+
 # Independent code review
 
 Initial immutable range: production `0a1334e` through `ce5e4bd`. A fresh reviewer inspected the implementation read-only and independently executed a service-worker deployment-race simulation. No Critical findings. Two Important and one Minor finding were accepted:

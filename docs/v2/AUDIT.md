@@ -1,3 +1,8 @@
+> **Historical record:** This document describes the original V2 milestone.
+> V2 is now production on `main`; `v1` archives the old web app and
+> `android-app` contains the separate APK. See the [current records index](README.md)
+> for current branch, storage and release information. The original record follows.
+
 # Untouched V1 baseline — 2026-10-17
 
 Production reference: `main` and `origin/main` at `0a1334ed44cde1ef1cb48550fef18a71356f41e1`. Clean working tree before creation of `v2`. No repository AGENTS.md or parent guidance found. Cloudflare configuration is not present; hosting relationship is owner-supplied and must remain unchanged.

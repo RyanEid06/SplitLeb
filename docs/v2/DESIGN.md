@@ -1,3 +1,8 @@
+> **Historical record:** This document describes the original V2 milestone.
+> V2 is now production on `main`; `v1` archives the old web app and
+> `android-app` contains the separate APK. See the [current records index](README.md)
+> for current branch, storage and release information. The original record follows.
+
 # SplitLeb V2 design and safety contract
 
 Owner brief: [OWNER-BRIEF.md](OWNER-BRIEF.md). Authorized scope is the entire Web/PWA V2 pass, implemented inline on `v2`; the owner retains production approval. No merge, deployment, framework rewrite, Android package, account, AI, analytics or backend.

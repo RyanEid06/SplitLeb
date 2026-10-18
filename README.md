@@ -16,7 +16,7 @@ the production app on `main`.
 | Branch | Purpose |
 | --- | --- |
 | [`main`](https://github.com/RyanEid06/SplitLeb/tree/main) | Current web/PWA production, based on completed V2 |
-| [`v1`](https://github.com/RyanEid06/SplitLeb/tree/v1) | Frozen original web app, preserved at its former production commit |
+| [`v1`](https://github.com/RyanEid06/SplitLeb/tree/v1) | Archived original web app; application code preserved, documentation maintained |
 | [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app) | Separate Android/APK implementation of the V2 app |
 
 The former `v2` branch is incorporated into `main`; it is no longer a separate
@@ -84,4 +84,4 @@ unchanged private backup uses `SPLITLEB_REAL_BACKUP` for unit tests or a path
 argument to `qa-backup-import.mjs`; private data is never committed.
 
 See [production promotion and recovery](docs/PRODUCTION-PROMOTION.md),
-[current continuity](V2-CONTINUITY.md), and the [historical V2 verification](docs/v2/VERIFICATION.md).
+[current continuity](V2-CONTINUITY.md), and the [historical V2 records](docs/v2/README.md).
