@@ -17,9 +17,9 @@ remain. No source/data loss, Android changes, redesign or unrelated cleanup.
   responsive/axe, unsaved changes and actual original-V1 same-origin upgrade.
 - [x] Independent review of promotion diff and safety constraints. Blocked/queued
   legacy-tab issue fixed and re-reviewed with no remaining actionable findings.
-- [ ] Fast-forward main to reviewed integration commit; push main; verify exact
+- [x] Fast-forward main to reviewed integration commit; push main; verify exact
   source Cloudflare status and live production assets/UI.
-- [ ] Verify original V1/Android refs and V2 ancestry, then delete merged v2 and
+- [x] Verify original V1/Android refs and V2 ancestry, then delete merged v2 and
   local temporary branch. Confirm exactly main, v1, android-app locally/remotely.
 
 Ruling: a temporary local branch in the existing clean checkout provides the
@@ -39,3 +39,10 @@ The same regression then exposed queued open requests behind the first blocked
 request: later pages never receive a blocked event and stayed loading forever.
 Bounded the pending open to five seconds with distinct TimeoutError guidance;
 the eventual native connection still closes without clearing data.
+
+Completed: merge a0ee38e preserves original main and V2 as its two parents.
+Cloudflare check succeeded for that exact source, deployment 54d8be15-beb6-4d2f-96d8-544f780426a9.
+Live production JS/CSS/logo hashes match the verified build. Live isolated
+synthetic import, 21 duplicates skipped, field preservation, reload and offline
+reload passed. Both local and remote branches are exactly main, v1, android-app.
+V2 has zero unique commits relative to main and remains preserved by its tag.

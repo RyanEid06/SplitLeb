@@ -53,7 +53,9 @@ same-origin v3 profile before deployment. Preserve existing data and backups.
 
 - **149 tests / 24 files passed**, including the unchanged owner's backup.
   Without the optional private-file path, 148 tests run and one acceptance test
-  skips. TypeScript, ESLint, production build and diff whitespace checks passed.
+  skips. TypeScript, ESLint, production build and whitespace checks for promotion
+  changes passed. Historical V2 owner-brief Markdown hard breaks and captured
+  logs retain their original whitespace; those files were preserved unchanged.
 - Six original-backup import scenarios passed: fresh DB, legacy v1 bills-only,
   v2 bills-only, v2 missing indexes, post-commit refresh failure, file-read failure.
   Successful cases also verify duplicates and preservation of existing records.
@@ -79,3 +81,24 @@ Post-push deployment evidence is kept in ignored `output/production-switch/` and
 reported in the chat. Historical `docs/v2` reports remain historical; they do not
 stand in for this source's verification. Chromium tests are not physical-device
 acceptance of every existing user's browser.
+
+## Deployment and completed branch switch
+
+- Promotion merge: `a0ee38e3c806ede19a62eb4f2b338ff4288bb00c`, parents are the
+  original main e0ccf80 and completed V2 d465ff0. All original history remains.
+- Exact-source Cloudflare Pages check: **success**; automatic production
+  deployment `54d8be15-beb6-4d2f-96d8-544f780426a9`. Production remains
+  `https://splitleb.pages.dev`. No manual hosting/domain changes were needed.
+- Live production verified: new V2 UI on mobile/desktop; exact SHA-256 matches
+  for `index-DokTKPlv.js`, `index-C19CYuKl.css` and approved logo. Synthetic
+  18-bill/3-group import passed, 21 duplicates skipped, all fields survived reload,
+  DB v3 confirmed, offline reload passed, no browser runtime errors.
+- Verified V1's tree equals the original production tree and Android remains
+  exactly bb7d3da. V2 had zero unique commits relative to main before deletion.
+- Removed remote/local `v2` and the temporary local integration branch only after
+  live verification. Exactly **main**, **v1**, **android-app** remain locally and
+  remotely. The archived V2 tag and pre-switch bundle preserve recovery evidence.
+
+Subsequent documentation-only confirmation does not change packaged runtime
+inputs. Current deployment/status evidence and live screenshots are retained in
+ignored `output/production-switch/`.
