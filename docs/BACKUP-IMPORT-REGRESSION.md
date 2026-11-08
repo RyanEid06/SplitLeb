@@ -81,7 +81,6 @@ does not constitute execution in Android WebView or on a physical device.
 - `src/storage/dbMigration.test.ts`: expected migrated version 3.
 - `src/storage/billStorage.test.ts`: adapt store test double to transactional reads.
 - `scripts/qa-backup-import.mjs`: repeatable production-asset browser regressions.
-- This report and `docs/superpowers/plans/2026-10-18-backup-import.md`.
 
 No dependency, backup-format, hosting, product-feature, layout, signing identity,
 Android application ID/origin or V2-branch changes were made. The fix was prepared

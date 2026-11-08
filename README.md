@@ -1,129 +1,20 @@
-<p align="center">
-  <img src="public/splitleb-logo.png" width="112" alt="SplitLeb logo">
-</p>
+# SplitLeb for Android
 
-# SplitLeb
+SplitLeb splits bills and tracks shared expenses in USD and Lebanese pounds. **Version 1.0.1** runs on **Android 7.0 and newer** and packages the React and TypeScript app with Capacitor.
 
-Split bills, track shared expenses and settle balances in USD or Lebanese pounds.
-SplitLeb works offline and keeps bills and groups on your device. No account or
-server is needed.
+**[Download the Android APK](https://github.com/RyanEid06/SplitLeb/releases/download/android-v1.0.1/SplitLeb-Android-1.0.1.apk)** · [Latest release and checksum](https://github.com/RyanEid06/SplitLeb/releases/latest) · [Open the web app](https://splitleb.pages.dev/)
 
-**[Download Android 1.0.1](https://github.com/RyanEid06/SplitLeb/releases/tag/android-v1.0.1)**
-— permanently signed APK with a full mint launcher icon. Download
-`SplitLeb-Android-1.0.1.apk` from the release assets; the checksum is included.
-This update repairs backup import on incomplete legacy databases while preserving
-existing records and the backup format.
+Open the downloaded APK and follow the install prompt. If you already use the official 1.0.0 build, install 1.0.1 over it to keep saved data. If you use a debug build with a different signing key, export and verify a JSON backup before uninstalling, then import it into the official app.
 
-## What you can do
+## Features and privacy
 
-- Split items equally, by shares or with custom amounts.
-- Track discounts, extras, payments and settlement transfers.
-- Reuse groups, review history and statistics, duplicate bills and share summaries.
-- Export and import JSON backups, including older supported backup formats.
-- Create, edit and reopen saved bills offline.
+- Split items equally, by shares, or by custom amounts. Track extras, discounts, payments, and settlement transfers.
+- Reuse groups, review history and statistics, duplicate bills, and export or import JSON backups.
+- Work offline with local storage and no account. Android and web store data separately. Use backups to move records between devices or platforms.
+- Keep USD and LBP balances separate. LBP entry uses thousands (`630` means LBP 630,000).
 
-Changes use an explicit Save action, with protection against accidental
-navigation. USD and LBP stay separate; there is no exchange-rate conversion.
-LBP entry uses thousands: `630` means LBP 630,000. Settlement transfers retain
-LBP 1,000 rounding. Menu prices are treated as tax-included.
+## Build from source
 
-## Android installation and backups
+Install Node.js 24, JDK 21, and Android SDK 36. From this branch, run `npm ci`, then `npm run android:sync` and `npm run android:build` for a debug APK. Use the official signed APK above to update an existing release installation.
 
-The Android app packages the same React application locally through Capacitor.
-It can cold-launch without a connection; it does not load the hosted website.
-Updates are delivered as signed APKs. Android backup export opens the system
-share chooser: choose a durable destination and confirm the JSON file was saved.
-
-**Updating the official 1.0.0 release:** open the 1.0.1 APK and choose Update.
-It uses the same permanent signing key and package ID, with a higher version
-code. Keep app data; no uninstall is needed. Existing bills and groups migrate
-automatically without resetting storage.
-
-**Upgrading from the earlier debug APK:** export and verify a JSON backup before
-uninstalling it. Install the signed release, then import the backup. The debug
-and permanent signing keys differ, so Android cannot update one over the other.
-Uninstalling removes local app records.
-
-The web/PWA and Android app keep separate local data. Use backups to move
-between them or devices. Clearing app/browser data can remove records; offline
-storage is not a backup.
-
-## Source and documentation
-
-| Branch | Purpose |
-| --- | --- |
-| [`android-app`](https://github.com/RyanEid06/SplitLeb/tree/android-app) | Android release source, resources and build scripts based on V2 |
-| [`main`](https://github.com/RyanEid06/SplitLeb/tree/main) | Current web/PWA production, incorporating completed V2 |
-| [`v1`](https://github.com/RyanEid06/SplitLeb/tree/v1) | Archived original web application |
-
-The [web/PWA production app](https://splitleb.pages.dev/) is maintained on `main`.
-The former `v2` branch was incorporated into `main` and removed. Android remains
-separate; its published APK does not update when the web site deploys.
-
-- [Android architecture, builds, signing and verification](docs/ANDROID.md)
-- [Historical V2 architecture and verification](docs/v2/README.md)
-- [Maintainer continuity](V2-CONTINUITY.md)
-
-## Development
-
-Verified with Node.js 24.18.0 and npm 11.16.0. Android also needs JDK 21 and the
-SDK versions documented in the Android guide.
-
-```sh
-npm ci
-npm run dev
-```
-
-For a production web build and preview:
-
-```sh
-npm run build
-npm run preview -- --host 127.0.0.1 --port 4173
-```
-
-Development does not register the production service worker. The web/PWA caches
-its shell after the first successful online visit; updates wait for unsaved
-changes and reject incomplete or mixed assets. Production hosting must serve
-`index.html` for app routes and real files for assets, icons, manifest and worker.
-Existing Cloudflare configuration is unchanged.
-
-```sh
-npm run android:sync    # build web assets and sync Android
-npm run android:open    # Android Studio
-npm run android:build   # debug APK
-npm run android:release # Windows; requires the existing private signing key
-```
-
-## Checks
-
-```sh
-npm run typecheck
-npm run lint
-npm run test:run
-npx playwright install chromium
-```
-
-With production preview running on port 4173:
-
-```sh
-npm run qa:browser -- http://127.0.0.1:4173
-npm run qa:unsaved
-npm run qa:prepare-v1
-npm run qa:pwa
-npm run qa:android-shell
-node scripts/qa-backup-import.mjs
-```
-
-QA uses synthetic data and isolated browser profiles. Results go to ignored
-`output/`; an existing full Chromium can be selected with
-`PLAYWRIGHT_CHROMIUM_EXECUTABLE`. The legacy upgrade fixture uses immutable
-`git archive`, without checking out or modifying `main`.
-
-Android 1.0.1 verification: **160 tests / 26 files**, including the unchanged
-original backup; TypeScript/ESLint clean, **6 import scenarios**, **5 native
-shell checks**, and the signed Android build pass. Historical web/PWA proof is
-recorded separately in the Android guide. Android release
-lint has **0 errors / 8 advisory warnings**. Browser-native bridge mocks are not
-phone tests. The owner accepted the earlier debug build on their phone; final
-signed/icon-changed phone checks and other manual limits are in the
-[Android guide](docs/ANDROID.md#physical-device-follow-up).
+[Android build and signing guide](docs/ANDROID.md) · [Backup compatibility](docs/BACKUP-IMPORT-REGRESSION.md) · [Web source](https://github.com/RyanEid06/SplitLeb/tree/main)
